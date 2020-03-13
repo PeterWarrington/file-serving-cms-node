@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Global imports-->
+    <link rel="stylesheet" href="/global/style.css"/>
+    
+    <!-- Local imports -->
+    <link rel="stylesheet" href="style.css"/>
+    <script src="script.js"></script>
+
+    <!-- Bootstrap imports-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    
+    <!-- Font awesome-->
+    <script src="https://kit.fontawesome.com/de48b37f71.js" crossorigin="anonymous"></script>
+
+    <title>Home - <%= basics.name %></title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#"><%= basics.name %></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Your subjects
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <% for (i=0; i < 5 && i < user.subjects.length; i++) { %>
+                  <a class="dropdown-item" href="#"><%= user.subjects[i].name %></a>
+                <% }; %>
+                <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">See all</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Add more</a>
+              </div>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success mt-2 my-sm-0 mr-sm-2" type="submit">Search</button>
+          </form>
+          <a href="#" class="btn btn-primary my-lg-0" role="button">
+            Sign in
+          </a>
+        </div>
+      </nav>
+    
+    <div class="bg-primary mb-4">
+        <div class="container py-4 text-white">
+            <h1>Welcome to <%= basics.name %></h1>
+            <p>Community Practice Questions, Papers and Answers to prepare for your exams across a range of
+                different exam boards and subjects - All here.</p>
+        </div>
+    </div>
+    <div class="container">
+      <h1 class="mb-3">Popular <%= basics.Objectname %>s:</h1>
+      <div class="row">
+      <% for (i=0; i < 8 && i < posts.popular.length; i++) { %>
+        <div class="col-sm card mt-1 mr-1">
+          <div class="card-body">
+            <h5 class="card-title"> <i class="file-icon fas fa-file-pdf mr-2"></i><%= posts.popular[i].title %></h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+              <span class="star-count">
+                <i class="fas fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+              </span>
+              | <%= posts.popular[i].userName %> | <%= posts.popular[i].simpleDate %>
+            </h6>
+            <p class="card-text"><% posts.popular[i].descriptionShort %></p>
+            <a href="/q-page/index.html" class="card-link">See more</a>
+            <a href="" class="card-link">Download</a>
+          </div>
+        </div>
+      <% }; %>
+    </div>
+</body>
+</html>

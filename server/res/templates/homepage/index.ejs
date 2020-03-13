@@ -69,22 +69,28 @@
     </div>
     <div class="container">
       <h1 class="mb-3">Popular <%= basics.Objectname %>s:</h1>
-      <div class="row">
+
       <% for (i=0; i < 8 && i < posts.popular.length; i++) { %>
-        <div class="col-sm card mt-1 mr-1">
-          <div class="card-body">
-            <h5 class="card-title"> <i class="file-icon fas fa-file-pdf mr-2"></i><%= posts.popular[i].title %></h5>
-            <h6 class="card-subtitle mb-2 text-muted">
-              <span class="star-count">
-                <i class="fas fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-              </span>
-              | <%= posts.popular[i].userName %> | <%= posts.popular[i].simpleDate %>
-            </h6>
-            <p class="card-text"><% posts.popular[i].descriptionShort %></p>
-            <a href="/q-page/index.html" class="card-link">See more</a>
-            <a href="" class="card-link">Download</a>
+        <% if (i % 2 == 0) { %> <!-- Split given popular posts into rows-->
+          <div class="row">
+        <% } %>
+            <div class="col-sm card mt-1 mr-1">
+              <div class="card-body">
+                <h5 class="card-title"> <i class="file-icon fas fa-file-pdf mr-2"></i><%= posts.popular[i].title %></h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                  <span class="star-count">
+                    [TODO: ADD STAR RATINGS]
+                  </span>
+                  | <%= posts.popular[i].userName %> | <%= posts.popular[i].simpleDate %>
+                </h6>
+                <p class="card-text"><% posts.popular[i].descriptionShort %></p>
+                <a href="/q-page/index.html" class="card-link">See more</a>
+                <a href="" class="card-link">Download</a>
+              </div>
+            </div>
+        <% if ((i % 2 != 0) || (i == posts.popular.length - 1)) { %> <!-- Close the row when it has 2 items or at end of list-->
           </div>
-        </div>
+        <% } %>
       <% }; %>
     </div>
 </body>

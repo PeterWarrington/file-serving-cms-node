@@ -1,56 +1,36 @@
+const mysqlQueryer = require(process.cwd() + "/src/api/mysqlQueryer.js");
+en = require("javascript-time-ago/locale/en");
+TimeAgo = require('javascript-time-ago');
+
 exports.main = (req, res, variables) => {
-    res.render('homepage', {
-        pageDetails: {
-            pageTitle: "Home",
-            pageResDirectory: "homepage"
-        },
-        basics: variables.basics, 
-        user: variables.user,
-        generatorData: {
-            maxToGenerate: 8,
-            maxPerRow: 2,
-            postArray: [
-                {
-                    title: "Title",
-                    userName: "UserName",
-                    simpleDate: "Time ago",
-                    descriptionShort: "Shortened description",
-                    seeMoreLink: "#",
-                    downloadLink: "#"
-                },
-                {
-                    title: "Title",
-                    userName: "UserName",
-                    simpleDate: "Time ago",
-                    descriptionShort: "Shortened description",
-                    seeMoreLink: "#",
-                    downloadLink: "#"
-                },
-                {
-                    title: "Title",
-                    userName: "UserName",
-                    simpleDate: "Time ago",
-                    descriptionShort: "Shortened description",
-                    seeMoreLink: "#",
-                    downloadLink: "#"
-                },
-                {
-                    title: "Title",
-                    userName: "UserName",
-                    simpleDate: "Time ago",
-                    descriptionShort: "Shortened description",
-                    seeMoreLink: "#",
-                    downloadLink: "#"
-                },
-                {
-                    title: "Title",
-                    userName: "UserName",
-                    simpleDate: "Time ago",
-                    descriptionShort: "Shortened description",
-                    seeMoreLink: "#",
-                    downloadLink: "#"
-                },
-            ]
+    TimeAgo.addLocale(en);
+
+    popularPostsRaw = mysqlQueryer.getPopularPosts(5, (results) => {
+        postArray = [];
+        for (i=0; i < results.length; i++) {
+            simpleDate = (new TimeAgo("en-GB")).format(Date.parse(results[i]["object-post-date"])); // Put into x time ago format
+            postArray.push({
+                title: results[i]["object-title"],
+                userName: results[i]["object-creator-user"],
+                simpleDate: simpleDate,
+                descriptionShort: results[i]["object-description"],
+                seeMoreLink: "#",
+                downloadLink: "#"
+            });
         }
+        
+        res.render('homepage', {
+            pageDetails: {
+                pageTitle: "Home",
+                pageResDirectory: "homepage"
+            },
+            basics: variables.basics, 
+            user: variables.user,
+            generatorData: {
+                maxToGenerate: 8,
+                maxPerRow: 2,
+                postArray: postArray
+            }
+        });
     });
 }

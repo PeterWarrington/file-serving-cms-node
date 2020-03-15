@@ -11,7 +11,7 @@
                 </span>
                 | <%= generatorData.postArray[i].userName %> | <%= generatorData.postArray[i].simpleDate %>
             </h6>
-            <p class="card-text"><% generatorData.postArray.descriptionShort %></p>
+            <p class="card-text"><%= generatorData.postArray[i].descriptionShort %></p>
             <a href="<%= generatorData.postArray[i].seeMoreLink %>" class="card-link">See more</a>
             <a href="<%= generatorData.postArray[i].downloadLink %>" class="card-link">Download</a>
             </div>

@@ -1,0 +1,16 @@
+<%- include(process.cwd() + '/res/templates/global/global_template_header') %>
+
+<div class="bg-primary mb-4">
+  <div class="container py-4 text-white">
+      <h1>Welcome to <%= basics.name %></h1>
+      <p>Community Practice Questions, Papers and Answers to prepare for your exams across a range of
+          different exam boards and subjects - All here.</p>
+  </div>
+</div>
+
+<div class="container">
+  <h1 class="mb-3">Popular <%= basics.Objectname %>s:</h1>
+  <%- include(process.cwd() + '/res/templates/postPreviewCardGenerator') %>
+</div>
+
+<%- include(process.cwd() + '/res/templates/global/global_template_footer') %>

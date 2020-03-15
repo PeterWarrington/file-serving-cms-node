@@ -1,6 +1,8 @@
 const mysqlQueryer = require(process.cwd() + "/src/api/mysqlQueryer.js");
-en = require("javascript-time-ago/locale/en");
-TimeAgo = require('javascript-time-ago');
+const en = require("javascript-time-ago/locale/en");
+const TimeAgo = require('javascript-time-ago');
+
+const getClassNameForExtension = require('font-awesome-filetypes').getClassNameForExtension;
 
 exports.main = (req, res, variables) => {
     TimeAgo.addLocale(en);
@@ -14,11 +16,12 @@ exports.main = (req, res, variables) => {
                 userName: results[i]["object-creator-user"],
                 simpleDate: simpleDate,
                 descriptionShort: results[i]["object-description"],
+                fileExtensionClass: getClassNameForExtension(results[i]["object-file-extension"]),
                 seeMoreLink: "#",
                 downloadLink: "#"
             });
         }
-        
+
         res.render('homepage', {
             pageDetails: {
                 pageTitle: "Home",

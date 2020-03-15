@@ -12,7 +12,7 @@ function generateConnectionForReading(table, callback) {
 
 exports.getPopularPosts = async (limit, callback) => {
     generateConnectionForReading("objects", (con) => {
-        sqlQuery = "SELECT `object-post-date`, `object-title`, `object-description`, `object-creator-user`, `object-tags` FROM `project-q`.objects ORDER BY `object-access-count` DESC LIMIT " + limit.toString() + ";";
+        sqlQuery = "SELECT `object-post-date`, `object-title`, `object-description`, `object-creator-user`, `object-file-extension`, `object-tags` FROM `project-q`.objects ORDER BY `object-access-count` DESC LIMIT " + limit.toString() + ";";
         console.log(sqlQuery);
         con.query(sqlQuery, function (err, result) {
             if (err) throw err;

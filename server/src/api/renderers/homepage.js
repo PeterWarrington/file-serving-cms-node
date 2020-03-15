@@ -1,5 +1,8 @@
 exports.main = (req,res) => {
     res.render('homepage', {
+        pageDetails: {
+            pageTitle: "Home"
+        },
         basics: {
             name: 'Project #Q', 
             Objectname: '#Q'

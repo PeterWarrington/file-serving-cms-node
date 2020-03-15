@@ -42,7 +42,6 @@ exports.main = (req,res) => {
                     simpleDate: "Time ago",
                     descriptionShort: "Shortened description"
                 },
-
             ]
         }
     });

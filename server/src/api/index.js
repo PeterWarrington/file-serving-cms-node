@@ -5,7 +5,8 @@ const port = 80
 app.set('view engine', 'ejs'); // Load pug layout engine
 app.set('views', process.cwd() + '/res/templates/'); // Set location of template files
 
-console.log(process.cwd() + "/src/api/renderers/homepage.js");
+app.use(express.static(process.cwd() + '/res/static/')); // Serve static files (e.g: globabl css file)
+
 app.get('/', (req,res) => {
     require(process.cwd() + '/src/api/renderers/homepage.js').main(req,res);
 });

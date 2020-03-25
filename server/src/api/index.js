@@ -24,4 +24,8 @@ app.get('/', (req,res) => {
     require(process.cwd() + '/src/api/renderers/homepage.js').main(req, res, variables);
 });
 
+app.get('/post/:objectId', (req,res) => {
+    require(process.cwd() + '/src/api/renderers/post_detail.js').main(req, res, variables);
+});
+
 app.listen(port, () => console.log(`Project #Q server has started on port ${port}!`));

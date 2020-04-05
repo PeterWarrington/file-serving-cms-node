@@ -18,7 +18,7 @@ exports.main = (req, res, variables) => {
                 descriptionShort: results[i]["object-description"],
                 fileExtensionClass: getClassNameForExtension(results[i]["object-file-extension"]),
                 seeMoreLink: "/post/" + results[i]["object-hash-id"],
-                downloadLink: "#"
+                downloadLink: "/download/" + results[i]["object-hash-id"]
             });
         }
 

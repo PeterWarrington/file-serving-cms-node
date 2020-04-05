@@ -31,7 +31,8 @@ exports.main = (req, res, variables) => {
                 fileName: result["object-file-name"],
                 fileSizeSimple: humanFileSize(result["object-file-size"], true),
                 tags: JSON.parse(result["object-tags"]),
-                fileExtensionClass: getClassNameForExtension(result["object-file-extension"])
+                fileExtensionClass: getClassNameForExtension(result["object-file-extension"]),
+                objectId: objectId
             }
             res.render('post_detail', {
                 pageDetails: {

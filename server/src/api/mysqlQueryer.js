@@ -45,3 +45,19 @@ exports.getObjectDetails = (objectId, callback) => {
         });
     });
 };
+
+exports.getFileBuffer = (objectId, callback) => {
+    generateConnectionForReading("public", (con) => {
+        sqlQuery = "\
+        SELECT * FROM `project-q`.`object-blobs` \
+        WHERE `object-hash-id` = " + con.escape(objectId);
+        con.query(sqlQuery, function (err, result) {
+            if (err) throw err;
+            if (result != null) {
+                callback(result[0]);
+            } else {
+                throw new Error("Could not get post detail from db. Result is null.");
+            }
+        });
+    });
+}

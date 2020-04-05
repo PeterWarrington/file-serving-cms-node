@@ -1,18 +1,18 @@
 const mysql = require("mysql");
 const config = require(process.cwd() + "/config.js").config;
 
-function generateConnectionForReading(type, callback) {
+function generateDbConnection(readOrWrite, type, callback) {
     var con = mysql.createConnection({
         host: config.databaseServer,
-        user: "read_" + type,
-        password: config.databasePass + "read_" + type,
+        user: readOrWrite + "_" + type,
+        password: config.databasePass + readOrWrite + "_" + type,
         database: "project-q"
     });
     callback(con);
 }
 
 exports.getPopularPosts = async (limit, callback) => {
-    generateConnectionForReading("public", (con) => {
+    generateDbConnection("read", "public", (con) => {
         sqlQuery = "\
         SELECT `object-hash-id`, `object-post-date`, `object-title`, `object-description`, `object-creator-user`, `object-file-extension`, `object-tags` \
         FROM (SELECT * FROM `project-q`.view_count LIMIT 500) AS InnerTable \
@@ -31,7 +31,7 @@ exports.getPopularPosts = async (limit, callback) => {
 };
 
 exports.getObjectDetails = (objectId, callback) => {
-    generateConnectionForReading("public", (con) => {
+    generateDbConnection("read", "public", (con) => {
         sqlQuery = "\
         SELECT * FROM `project-q`.objects \
         WHERE `object-hash-id` = " + con.escape(objectId);
@@ -47,10 +47,10 @@ exports.getObjectDetails = (objectId, callback) => {
 };
 
 exports.getFileBuffer = (objectId, callback) => {
-    generateConnectionForReading("public", (con) => {
+    generateDbConnection("read", "public", (con) => {
         sqlQuery = "\
         SELECT * FROM `project-q`.`object-blobs` \
-        WHERE `object-hash-id` = " + con.escape(objectId);
+        WHERE `object-hash-id` = " + con.escape(objectId); // Query to get blob
         con.query(sqlQuery, function (err, result) {
             if (err) throw err;
             if (result != null) {
@@ -59,5 +59,13 @@ exports.getFileBuffer = (objectId, callback) => {
                 throw new Error("Could not get post detail from db. Result is null.");
             }
         });
+    });
+
+    generateDbConnection("write", "public", (con) => { // Increment download count
+        sqlQuery = "\
+        UPDATE `project-q`.`objects` \
+        SET `object-download-count` = `object-download-count` + 1 \
+        WHERE `object-hash-id` = " + con.escape(objectId); 
+        con.query(sqlQuery, function (err, result) {});
     });
 }

@@ -44,7 +44,14 @@ exports.main = (req, res, variables) => {
             });
         } else {
             res.status(404);
-            res.end("<h1>404</h1>"); 
+            res.render('404', {
+                pageDetails: {
+                    pageTitle: "404 - Page not found",
+                    pageResDirectory: "null"
+                },
+                basics: variables.basics, 
+                user: variables.user
+            });
         }
     });
 };

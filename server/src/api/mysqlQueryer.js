@@ -35,7 +35,6 @@ exports.getObjectDetails = (objectId, callback) => {
         sqlQuery = "\
         SELECT * FROM `project-q`.objects \
         WHERE `object-hash-id` = " + con.escape(objectId);
-        console.log(sqlQuery);
         con.query(sqlQuery, function (err, result) {
             if (err) throw err;
             if (result != null) {

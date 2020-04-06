@@ -1,3 +1,4 @@
+const utils = require(process.cwd() + "/src/api/utils.js");
 const mysqlQueryer = require(process.cwd() + "/src/api/mysqlQueryer.js");
 const getClassNameForExtension = require('font-awesome-filetypes').getClassNameForExtension;
 
@@ -44,16 +45,8 @@ exports.main = (req, res, variables) => {
                 user: variables.user,
                 postData: postData
             });
-        } else {
-            res.status(404);
-            res.render('404', {
-                pageDetails: {
-                    pageTitle: "404 - Page not found",
-                    pageResDirectory: "null"
-                },
-                basics: variables.basics, 
-                user: variables.user
-            });
+        } else { // Data for ID not found in database
+            utils.send404(res, variables);
         }
     });
 };

@@ -1,3 +1,4 @@
+const utils = require(process.cwd() + "/src/api/utils.js");
 const mysqlQueryer = require(process.cwd() + "/src/api/mysqlQueryer.js");
 
 exports.main = (req, res, variables) => {
@@ -8,15 +9,7 @@ exports.main = (req, res, variables) => {
             res.setHeader('Content-disposition', 'attachment; filename=' + result["object-file-name"]);
             res.end(fileBuffer);
         } else { // No result has been returned
-            res.status(404);
-            res.render('404', {
-                pageDetails: {
-                    pageTitle: "404 - Page not found",
-                    pageResDirectory: "null"
-                },
-                basics: variables.basics, 
-                user: variables.user
-            });
+            utils.send404(res, variables);
         }
     });
 };

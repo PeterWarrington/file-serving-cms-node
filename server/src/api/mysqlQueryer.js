@@ -8,5 +8,10 @@ exports.generateDbConnection = (readOrWrite, type, callback) => {
         password: config.databasePass + readOrWrite + "_" + type,
         database: "project-q"
     });
-    callback(con);
+
+    if (callback != null) {
+        callback(con); // Callbacks are deprecated. Returning it is so much easier.
+    } else {
+        return con;
+    }
 }

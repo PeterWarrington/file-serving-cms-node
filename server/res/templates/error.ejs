@@ -1,7 +1,7 @@
 <%- include(process.cwd() + '/res/templates/global/global_template_header') %>
 <br/>
 <div class="container">
-    <h1>Error 404 - Page not found.</h1>
-    <p>The page you have requested could not be found. Try using the search bar or you can try <a href="/">going home</a>.</p>
+    <h1><%= error.errorTitle%></h1>
+    <p><%= error.errorDescription%></p>
 </div>
 <%- include(process.cwd() + '/res/templates/global/global_template_footer') %>

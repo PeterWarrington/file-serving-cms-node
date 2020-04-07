@@ -7,6 +7,7 @@
 
     <!-- Global imports-->
     <link rel="stylesheet" href="/res/global/style.css"/>
+    <script src="/res/global/script.js"></script>
     
     <!-- Local imports -->
     <link rel="stylesheet" href="/res/<%= pageDetails.pageResDirectory %>/style.css"/>
@@ -47,12 +48,15 @@
                 </div>
             </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success mt-2 my-sm-0 mr-sm-2" type="submit">Search</button>
-            </form>
+            <div class="d-flex my-2 my-lg-0">
+                <input class="form-control mr-sm-2 mt-1 searchInput" type="search" placeholder="Search" aria-label="Search" 
+                    <% if (typeof(searchQ) !== 'undefined' && searchQ != null) { // If on search page, add search query to search bar %>
+                        value="<%- searchQ %>" 
+                    <% } %>
+                > <i class="fas fa-search my-3 mr-3 text-white" aria-hidden="true"></i> <!-- search icon-->
+            </div>
             <a href="#" class="btn btn-primary my-lg-0" role="button">
-            Sign in
+                Sign in
             </a>
         </div>
     </nav>

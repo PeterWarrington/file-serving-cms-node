@@ -14,8 +14,7 @@ exports.main = (req, res, variables) => {
         GROUP BY `view-object-hash-id` ORDER BY COUNT(`view-object-hash-id`) DESC LIMIT 5 \
         "; // I don't even understand how this query works, but it *should* get the most reguarly accessed posts out of the previous 500 accesses
         con.query(sqlQuery, function (err, results) {
-            if (err) throw err;
-            if (results != null) {
+            if (results != null && !err) {
                 postArray = [];
                 for (i=0; i < results.length; i++) {
                     simpleDate = (new TimeAgo("en-GB")).format(Date.parse(results[i]["object-post-date"])); // Put into x time ago format
@@ -44,7 +43,10 @@ exports.main = (req, res, variables) => {
                     }
                 });
             } else {
-                throw new Error("Could not get popular posts from db");
+                utils.sendOtherError(res, variables, 500, {
+                    errorTitle: "Could not fetch popular posts from database",
+                    errorDescription: ""
+                })
             }
         });
     });

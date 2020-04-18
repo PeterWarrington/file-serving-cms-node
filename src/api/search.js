@@ -77,7 +77,7 @@ exports.main = async (req, res, variables) => {
                 }
             });
         } else {
-            // TODO
+            return []; // Return blank array to trigger no results found page
         }
     });
 };

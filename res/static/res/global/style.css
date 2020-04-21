@@ -1,6 +1,9 @@
 .star-count {
     color: rgb(194, 185, 55);
 }
+.no-star-count {
+    color: rgb(201, 201, 201);
+}
 .file-icon {
     color: rgb(63, 121, 196);
 }

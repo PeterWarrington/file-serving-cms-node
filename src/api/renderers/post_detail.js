@@ -1,5 +1,6 @@
 const utils = require(process.cwd() + "/src/api/utils.js");
 const mysqlQueryer = require(process.cwd() + "/src/api/mysqlQueryer.js");
+const getRoundedRating = require(process.cwd() + "/src/api/getRatings.js").getRoundedRating;
 const getClassNameForExtension = require('font-awesome-filetypes').getClassNameForExtension;
 
 function humanFileSize(bytes, si) {
@@ -29,32 +30,35 @@ exports.main = (req, res, variables) => {
             if (result != null) {
                 var result = result[0];
 
-                if (result != null && result != undefined) {
-                    postData = {
-                        title: result["object-title"],
-                        userName: result["object-creator-user"],
-                        rawDate: result["object-post-date"].toISOString().split('T')[0],
-                        descriptionFull: result["object-description"],
-                        previewImages: JSON.parse(result["object-preview-imgs"]),
-                        fileName: result["object-file-name"],
-                        fileSizeSimple: humanFileSize(result["object-file-size"], true),
-                        tags: JSON.parse(result["object-tags"]),
-                        fileExtensionClass: getClassNameForExtension(result["object-file-extension"]),
-                        objectId: objectId,
-                        downloadCount: result["object-download-count"]
+                getRoundedRating(objectId, (roundedRating) => {
+                    if (result != null && result != undefined) {
+                        postData = {
+                            title: result["object-title"],
+                            userName: result["object-creator-user"],
+                            rawDate: result["object-post-date"].toISOString().split('T')[0],
+                            descriptionFull: result["object-description"],
+                            previewImages: JSON.parse(result["object-preview-imgs"]),
+                            fileName: result["object-file-name"],
+                            fileSizeSimple: humanFileSize(result["object-file-size"], true),
+                            tags: JSON.parse(result["object-tags"]),
+                            fileExtensionClass: getClassNameForExtension(result["object-file-extension"]),
+                            objectId: objectId,
+                            downloadCount: result["object-download-count"],
+                            roundedRating: roundedRating
+                        }
+                        res.render('post_detail', {
+                            pageDetails: {
+                                pageTitle: postData.title,
+                                pageResDirectory: "null"
+                            },
+                            basics: variables.basics, 
+                            user: variables.user,
+                            postData: postData
+                        });
+                    } else { // Data for ID not found in database
+                        utils.send404(res, variables);
                     }
-                    res.render('post_detail', {
-                        pageDetails: {
-                            pageTitle: postData.title,
-                            pageResDirectory: "null"
-                        },
-                        basics: variables.basics, 
-                        user: variables.user,
-                        postData: postData
-                    });
-                } else { // Data for ID not found in database
-                    utils.send404(res, variables);
-                }
+                });
             } else {
                 throw new Error("Could not get post detail from db. Result is null.");
             }

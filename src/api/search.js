@@ -5,6 +5,7 @@ const TimeAgo = require('javascript-time-ago');
 const nodeUtil = require('util');
 const utils = require(process.cwd() + "/src/api/utils.js");
 const getClassNameForExtension = require('font-awesome-filetypes').getClassNameForExtension;
+const getRatings = require(process.cwd() + "/src/api/getRatings.js");
 
 var client = new elasticsearch.Client({
   host: 'localhost:9200/objects'
@@ -58,23 +59,34 @@ exports.main = async (req, res, variables) => {
                     descriptionShort: databasePostDataArray[i]["object-description"],
                     fileExtensionClass: getClassNameForExtension(databasePostDataArray[i]["object-file-extension"]),
                     seeMoreLink: "/post/" + databasePostDataArray[i]["object-hash-id"],
-                    downloadLink: "/download/" + databasePostDataArray[i]["object-hash-id"]
+                    downloadLink: "/download/" + databasePostDataArray[i]["object-hash-id"],
+                    id: databasePostDataArray[i]["object-hash-id"]
                 });
             }
 
-            res.render('search', {
-                pageDetails: {
-                    pageTitle: "Search: " + queryStr,
-                    pageResDirectory: "search"
-                },
-                basics: variables.basics, 
-                user: variables.user,
-                searchQ: queryStr,
-                generatorData: {
-                    maxToGenerate: 50,
-                    maxPerRow: 1,
-                    postArray: objectDataArray
+            getRatings.getRoundedRatingsFromObjectArray(objectDataArray, (roundedRatings) => {
+                objectIdArray = objectDataArray.map(function(item) { return item["id"]; });
+
+                for (i=0; i < roundedRatings.length; i++) {
+                    if (objectIdArray.includes(roundedRatings[i].id)) {
+                        objectDataArray[i] = Object.assign(objectDataArray[i], roundedRatings[i]);
+                    }
                 }
+
+                res.render('search', {
+                    pageDetails: {
+                        pageTitle: "Search: " + queryStr,
+                        pageResDirectory: "search"
+                    },
+                    basics: variables.basics, 
+                    user: variables.user,
+                    searchQ: queryStr,
+                    generatorData: {
+                        maxToGenerate: 50,
+                        maxPerRow: 1,
+                        postArray: objectDataArray
+                    }
+                });
             });
         } else {
             return []; // Return blank array to trigger no results found page

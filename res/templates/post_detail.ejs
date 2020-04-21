@@ -8,9 +8,7 @@
             <%= postData.title %>
                 <h5 class="text-muted">
                     <a href="#" class="text-muted">By <%= postData.userName%></a> | 
-                    <span class="star-count">
-                        [TODO: ADD STAR RATINGS]
-                    </span>
+                    <%- include(process.cwd() + '/res/templates/ratingGenerator.ejs') %>
                     | Posted <%= postData.rawDate %>
                 </h5>
             </h3>

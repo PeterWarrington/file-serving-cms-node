@@ -6,9 +6,8 @@
             <div class="card-body">
                 <h5 class="card-title"> <i class="file-icon fas <%= generatorData.postArray[i].fileExtensionClass %> mr-2"></i><%= generatorData.postArray[i].title %></h5>
                 <h6 class="card-subtitle mb-2 text-muted">
-                    <span class="star-count">
-                    [TODO: ADD STAR RATINGS]
-                    </span>
+                    <% postData = generatorData.postArray[i];  %> 
+                    <%- include(process.cwd() + '/res/templates/ratingGenerator') %>
                     | <%= generatorData.postArray[i].userName %> | <%= generatorData.postArray[i].simpleDate %>
                 </h6>
                 <p class="card-text"><%= generatorData.postArray[i].descriptionShort %></p>
@@ -16,7 +15,7 @@
                 <a href="<%= generatorData.postArray[i].downloadLink %>" class="card-link">Download</a>
             </div>
         </div>
-    <% if (((i - 1) % generatorData.maxPerRow == 0) || (i == generatorData.postArray.length - 1)) { %> <!-- Close the row when it has max items for the row or at end of list-->
+    <% if ( (i - 1 % generatorData.maxPerRow == 0 ) || (i == generatorData.postArray.length - 1) ) { %> <!-- Close the row when it has max items for the row or at end of list-->
         </div>
     <% } %>
 <% }; %>

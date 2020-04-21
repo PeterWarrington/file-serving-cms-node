@@ -37,8 +37,6 @@ exports.getRoundedRatingsFromObjectArray = (objectArray, callback) => {
             SELECT AVG(`review-rating`) 'avg-rating', `object-hash-id` FROM `project-q`.reviews \
             WHERE `object-hash-id` IN (" + con.escape(objectIdArray) + ") GROUP BY `object-hash-id`";
 
-            console.log(sqlQuery);
-
             con.query(sqlQuery, function (err, result) {
                 if (err) throw err;
                 if (result != null && result.length != 0) {

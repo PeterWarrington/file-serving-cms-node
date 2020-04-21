@@ -1,11 +1,11 @@
 const mysqlQueryer = require(process.cwd() + "/src/api/mysqlQueryer.js");
 
-function round_to_precision(x, precision) {
+exports.round_to_precision = (x, precision)  => {
     var y = +x + (precision === undefined ? 0.5 : precision/2);
     return y - (y % (precision === undefined ? 1 : +precision));
 } // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round#Demonstrative_Implementation
 
-exports.getRoundedRating = (objectId, callback) => {
+exports.getRating = (objectId, callback) => {
     mysqlQueryer.generateDbConnection("read", "public", (con) => {
         sqlQuery = "\
         SELECT AVG(`review-rating`) 'avg-rating' FROM `project-q`.reviews \
@@ -13,11 +13,8 @@ exports.getRoundedRating = (objectId, callback) => {
         con.query(sqlQuery, function (err, result) {
             if (err) throw err;
             if (result != null && result.length != 0) {
-                var result = result[0]['avg-rating'];
-
                 if (result != null && result != undefined) {
-                    roundedRating = round_to_precision(result, 0.5);
-                    callback(roundedRating);
+                    callback(result[0]['avg-rating']);
                 } else {
                     callback(0);
                 }
@@ -44,7 +41,7 @@ exports.getRoundedRatingsFromObjectArray = (objectArray, callback) => {
                     result.forEach(row => {
                         resultsObjectArray.push({
                             "id": row["object-hash-id"],
-                            "roundedRating": round_to_precision(row["avg-rating"], 0.5)
+                            "roundedRating": exports.round_to_precision(row["avg-rating"], 0.5)
                         });
                     });
 

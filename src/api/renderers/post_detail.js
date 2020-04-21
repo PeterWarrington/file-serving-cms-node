@@ -1,6 +1,6 @@
 const utils = require(process.cwd() + "/src/api/utils.js");
 const mysqlQueryer = require(process.cwd() + "/src/api/mysqlQueryer.js");
-const getRoundedRating = require(process.cwd() + "/src/api/getRatings.js").getRoundedRating;
+const getRatings = require(process.cwd() + "/src/api/getRatings.js");
 const getClassNameForExtension = require('font-awesome-filetypes').getClassNameForExtension;
 
 function humanFileSize(bytes, si) {
@@ -29,8 +29,7 @@ exports.main = (req, res, variables) => {
             if (err) throw err;
             if (result != null) {
                 var result = result[0];
-
-                getRoundedRating(objectId, (roundedRating) => {
+                getRatings.getRating(objectId, (rating) => {
                     if (result != null && result != undefined) {
                         postData = {
                             title: result["object-title"],
@@ -44,7 +43,8 @@ exports.main = (req, res, variables) => {
                             fileExtensionClass: getClassNameForExtension(result["object-file-extension"]),
                             objectId: objectId,
                             downloadCount: result["object-download-count"],
-                            roundedRating: roundedRating
+                            rating: Number(rating.toFixed(2)), // trims rating to two decimal places then removes trailing zeros
+                            roundedRating: getRatings.round_to_precision(rating, 0.5)
                         }
                         res.render('post_detail', {
                             pageDetails: {

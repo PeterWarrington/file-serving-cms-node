@@ -22,6 +22,8 @@ function humanFileSize(bytes, si) {
 exports.main = (req, res, variables) => {
     objectId = req.params.objectId;
     mysqlQueryer.generateDbConnection("read", "public", (con) => {
+        postData = {};
+
         sqlQuery = "\
         SELECT * FROM `project-q`.objects \
         WHERE `object-hash-id` = " + con.escape(objectId);
@@ -29,35 +31,63 @@ exports.main = (req, res, variables) => {
             if (err) throw err;
             if (result != null) {
                 var result = result[0];
-                getRatings.getRating(objectId, (rating) => {
-                    if (result != null && result != undefined) {
-                        postData = {
-                            title: result["object-title"],
-                            userName: result["object-creator-user"],
-                            rawDate: result["object-post-date"].toISOString().split('T')[0],
-                            descriptionFull: result["object-description"],
-                            previewImages: JSON.parse(result["object-preview-imgs"]),
-                            fileName: result["object-file-name"],
-                            fileSizeSimple: humanFileSize(result["object-file-size"], true),
-                            tags: JSON.parse(result["object-tags"]),
-                            fileExtensionClass: getClassNameForExtension(result["object-file-extension"]),
-                            objectId: objectId,
-                            downloadCount: result["object-download-count"],
-                            rating: Number(rating.toFixed(2)), // trims rating to two decimal places then removes trailing zeros
-                            roundedRating: getRatings.round_to_precision(rating, 0.5)
+                
+                var getRatingPromise = new Promise((resolutionFunc, rejectionFunc) => {
+                    getRatings.getRating(objectId, (rating) => {
+                        if (result != null && typeof result != 'undefined') {
+                            postData = {
+                                title: result["object-title"],
+                                userName: result["object-creator-user"],
+                                rawDate: result["object-post-date"].toISOString().split('T')[0],
+                                descriptionFull: result["object-description"],
+                                previewImages: JSON.parse(result["object-preview-imgs"]),
+                                fileName: result["object-file-name"],
+                                fileSizeSimple: humanFileSize(result["object-file-size"], true),
+                                tags: JSON.parse(result["object-tags"]),
+                                fileExtensionClass: getClassNameForExtension(result["object-file-extension"]),
+                                objectId: objectId,
+                                downloadCount: result["object-download-count"],
+                                rating: Number(rating.toFixed(2)), // trims rating to two decimal places then removes trailing zeros
+                                roundedRating: getRatings.round_to_precision(rating, 0.5)
+                            };
+
+                            resolutionFunc(postData);
+                        } else { // Data for ID not found in database
+                            rejectionFunc(new ReferenceError("404.1"));
                         }
-                        res.render('post_detail', {
-                            pageDetails: {
-                                pageTitle: postData.title,
-                                pageResDirectory: "null"
-                            },
-                            basics: variables.basics, 
-                            user: variables.user,
-                            postData: postData
-                        });
-                    } else { // Data for ID not found in database
-                        utils.send404(res, variables);
-                    }
+                    });
+                }).then(postData => new Promise((resolutionFunc, rejectionFunc) => {
+                    getRatings.getReviews(objectId, (reviews) => {
+                        if (result != null && typeof result != 'undefined') {
+                            postData.reviewData = [];
+
+                            reviews.forEach(item => {
+                                postData.reviewData.push({
+                                    reviewUser: item["review-user"],
+                                    reviewText: item["review-text"],
+                                    reviewRating: item["review-rating"],
+                                    reviewDate: item["review-date"].toISOString().split('T')[0]
+                                });
+                            });
+
+                            resolutionFunc(postData);
+                        } else {
+                            rejectionFunc(new ReferenceError("404.2"));
+                        }
+                    });
+                })).then(postData => {
+                    res.render('post_detail', {
+                        pageDetails: {
+                            pageTitle: postData.title,
+                            pageResDirectory: "null"
+                        },
+                        basics: variables.basics, 
+                        user: variables.user,
+                        postData: postData
+                    });
+                }).catch((err) => {
+                    console.log(err);
+                    utils.send404(res, variables);
                 });
             } else {
                 throw new Error("Could not get post detail from db. Result is null.");

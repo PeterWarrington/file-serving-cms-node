@@ -13,7 +13,7 @@ exports.getRating = (objectId, callback) => {
         con.query(sqlQuery, function (err, result) {
             if (err) throw err;
             if (result != null && result.length != 0) {
-                if (result != null && result != undefined) {
+                if (result != null && typeof result != 'undefined') {
                     callback(result[0]['avg-rating']);
                 } else {
                     callback(0);
@@ -45,7 +45,7 @@ exports.getRoundedRatingsFromObjectArray = (objectArray, callback) => {
                         });
                     });
 
-                    if (result != null && result != undefined) {
+                    if (result != null && typeof result != 'undefined') {
                         callback(resultsObjectArray);
                     }
                 } else {
@@ -56,4 +56,25 @@ exports.getRoundedRatingsFromObjectArray = (objectArray, callback) => {
     } else {
         callback([{}]);
     }
+};
+
+exports.getReviews = (objectId, callback) => {
+    mysqlQueryer.generateDbConnection("read", "public", (con) => {
+        sqlQuery = "\
+        SELECT * FROM `project-q`.reviews \
+        WHERE `object-hash-id` = " + con.escape(objectId) + "\
+        ORDER BY `review-id` DESC LIMIT 20;";
+        con.query(sqlQuery, function (err, result) {
+            if (err) throw err;
+            if (result != null && result.length != 0) {
+                if (result != null && typeof result != 'undefined') {
+                    callback(result);
+                } else {
+                    callback([{}]);
+                }
+            } else {
+                callback([{}]);
+            }
+        });
+    });
 };

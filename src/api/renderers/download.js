@@ -14,7 +14,7 @@ exports.main = (req, res, variables) => {
             if (result != null) {
                 var result = result[0];
 
-                if (result != undefined) {
+                if (typeof result != 'undefined') {
                     var fileBlobResultRaw = result["object-blob"];
                     var fileBuffer = Buffer.from(fileBlobResultRaw, 'binary');
                     res.setHeader('Content-disposition', 'attachment; filename=' + result["object-file-name"]);

@@ -1,8 +1,6 @@
 <%
     roundedRating = null;
     if (typeof x != 'undefined') { // We've been giving a review, give the rating for that
-        console.log(postData);
-        console.log(x);
         roundedRating = postData.reviewData[x].reviewRating;
     } else if (postData.roundedRating != null && typeof postData.roundedRating != 'undefined') { // We've been given a post, give the rating for that
         roundedRating = postData.roundedRating;

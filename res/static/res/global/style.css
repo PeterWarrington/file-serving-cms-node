@@ -20,3 +20,19 @@ body {
 .fa-search {
     cursor: pointer; 
 }
+.review .card{
+    padding: 0.1rem;
+    border: none;
+}
+.review .card-body {
+    padding: 0rem;
+}
+.review .card-title {
+    font-size: 1.05rem;
+}
+.review .card-subtitle {
+    font-size: 0.95rem;
+}
+.review .card-text {
+    font-size: 0.9rem;
+}

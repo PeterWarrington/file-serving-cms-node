@@ -16,11 +16,12 @@ exports.getHTML = (options, resolutionFunc, rejectionFunc) => {
                 });
             });
 
-            ejs.renderFile(process.cwd() + "/res/templates/reviewGenerator.ejs", {reviewData: reviewData}, {}, function(err, html){
+            ejs.renderFile(process.cwd() + "/res/templates/reviewGenerator.ejs", {reviewData: reviewData, reviewIDs: reviewData.map(a => a.reviewId)}, {}, function(err, html){
                 result = {
                     html: html,
-                    reviewIDs: reviewData.map(a => a.reviewId) // array of just the reviewId property
+                    reviewIDs: reviewData.map(a => a.reviewId)
                 }
+                console.log(err);
                 resolutionFunc(result);
             });
         } else {

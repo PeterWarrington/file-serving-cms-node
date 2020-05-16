@@ -36,4 +36,4 @@ app.get('/search/', (req,res) => {
     require(process.cwd() + '/src/api/search.js').main(req, res, variables);
 });
 
-app.listen(port, () => console.log(`Project #Q server has started on port ${port}!`));
+app.listen(port, () => console.log(`Project #Q server has started at http://localhost:${port}`));

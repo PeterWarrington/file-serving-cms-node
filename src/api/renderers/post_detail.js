@@ -74,7 +74,7 @@ exports.main = (req, res, variables) => {
                     res.render('post_detail', {
                         pageDetails: {
                             pageTitle: postData.title,
-                            pageResDirectory: "null"
+                            pageResDirectory: "post_detail"
                         },
                         basics: variables.basics, 
                         user: variables.user,

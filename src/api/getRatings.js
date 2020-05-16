@@ -73,11 +73,10 @@ exports.getReviews = (options, callback) => {
             var ids = "'" + options.alreadyDoneReviewIds.join("','") + "'"; // Converts to mysql array format https://stackoverflow.com/questions/43166013/javascript-array-to-mysql-in-list-of-values#comment73406326_43166013
             sqlAdditionalWhereClauses += " AND `review-id` NOT IN (" + ids + ")";
         }
-
         sqlQuery = "\
         SELECT * FROM `project-q`.reviews \
         WHERE `object-hash-id` = " + con.escape(options.objectId) + sqlAdditionalWhereClauses + "\
-        ORDER BY `review-id` DESC LIMIT 20;";
+        ORDER BY `review-id` DESC LIMIT 5;";
 
         con.query(sqlQuery, function (err, result) {
             if (err) throw err;
@@ -85,10 +84,10 @@ exports.getReviews = (options, callback) => {
                 if (result != null && typeof result != 'undefined') {
                     callback(result);
                 } else {
-                    callback([{}]);
+                    callback([]);
                 }
             } else {
-                callback([{}]);
+                callback([]);
             }
         });
     });

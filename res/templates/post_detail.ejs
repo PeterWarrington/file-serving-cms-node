@@ -31,9 +31,13 @@
             <h4>Answers</h4>
             <i>Answers are provided in the main document.</i>
 
-            <h4>Reviews:</h4>
+            <div id="review-container">
+                <h4>Reviews:</h4>
 
-            <%- reviewHTML %>
+                <%- reviewHTML %>
+
+                <button type="button" class="w-100 btn btn-outline-secondary" id="more-review-btn">More reviews...</button>
+            </div>
         </div>
         <div class="col-sm mt-sm">
             <h4>Details</h4>
@@ -88,10 +92,5 @@
         </div>
     </div>
 </div>
-
-
-<script>
-    reviewIDsAlreadyLoaded = [<%- reviewIDs %>]; // So that they are not accessed again
-</script>
   
 <%- include(process.cwd() + '/res/templates/global/global_template_footer') %>

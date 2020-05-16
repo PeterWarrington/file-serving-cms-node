@@ -2,6 +2,7 @@ const utils = require(process.cwd() + "/src/api/utils.js");
 const mysqlQueryer = require(process.cwd() + "/src/api/mysqlQueryer.js");
 const getRatings = require(process.cwd() + "/src/api/getRatings.js");
 const getClassNameForExtension = require('font-awesome-filetypes').getClassNameForExtension;
+const ratings_selection = require(process.cwd() + "/src/api/reviews_selection.js");
 
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
@@ -57,25 +58,19 @@ exports.main = (req, res, variables) => {
                         }
                     });
                 }).then(postData => new Promise((resolutionFunc, rejectionFunc) => {
-                    getRatings.getReviews(objectId, (reviews) => {
-                        if (result != null && typeof result != 'undefined') {
-                            postData.reviewData = [];
-
-                            reviews.forEach(item => {
-                                postData.reviewData.push({
-                                    reviewUser: item["review-user"],
-                                    reviewText: item["review-text"],
-                                    reviewRating: item["review-rating"],
-                                    reviewDate: item["review-date"].toISOString().split('T')[0]
-                                });
-                            });
-
-                            resolutionFunc(postData);
-                        } else {
-                            rejectionFunc(new ReferenceError("404.2"));
+                    new Promise ((htmlResolutionFunc, htmlRejectionFunc) => {
+                        let options = {
+                            objectId: objectId
+                        };
+                        ratings_selection.getHTML(options, htmlResolutionFunc, rejectionFunc)
+                    }).then(result => resolutionFunc(
+                        {
+                            postData: postData, 
+                            reviewHTML: result.html,
+                            reviewIDs: result.reviewIDs
                         }
-                    });
-                })).then(postData => {
+                    ));
+                }).then(result => {
                     res.render('post_detail', {
                         pageDetails: {
                             pageTitle: postData.title,
@@ -83,10 +78,13 @@ exports.main = (req, res, variables) => {
                         },
                         basics: variables.basics, 
                         user: variables.user,
-                        postData: postData
+                        postData: result.postData,
+                        reviewHTML: result.reviewHTML,
+                        reviewIDs: result.reviewIDs
                     });
-                }).catch((err) => {
+                })).catch((err) => {
                     console.log(err);
+                    console.log(err.stack);
                     utils.send404(res, variables);
                 });
             } else {

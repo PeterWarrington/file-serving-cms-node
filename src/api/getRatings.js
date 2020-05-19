@@ -66,7 +66,7 @@ exports.getReviews = (options, callback) => {
         sqlQuery = "\
         SELECT * FROM `project-q`.reviews \
         WHERE `object-hash-id` = " + con.escape(options.objectId) + sqlDetails.clauses + "\
-        ORDER BY `review-id` DESC LIMIT 10;";
+        ORDER BY `review-id` DESC LIMIT 7;";
 
         con.query(sqlQuery, function (err, result) {
             if (err) throw err;
@@ -80,7 +80,7 @@ exports.getReviews = (options, callback) => {
                     newAdditionalSqlClauses = getSqlClauses(sqlDetails.ids, options).clauses;
                     
                     checkIfEnd(con, objectId, newAdditionalSqlClauses, (isEnd) => {
-                        if (result.length < 10 || isEnd) {
+                        if (result.length < 7 || isEnd) {
                             result.push({isEnd: true});
                         }
                         callback(result);

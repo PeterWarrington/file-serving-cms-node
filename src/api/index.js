@@ -1,19 +1,16 @@
 const express = require('express')
 const app = express()
 const port = 80
+const config = require(process.cwd() + "/config.js").config
 
 const variables = {
-    basics: {
-        name: 'Project #Q', 
-        Objectname: '#Q'
-    },
     user: {
         subjects: [
             {
                 name: "Subject"
             }
-    ]},
-}
+    ]}, ...config
+};
 
 app.set('view engine', 'ejs'); // Load pug layout engine
 app.set('views', process.cwd() + '/res/templates/'); // Set location of template files

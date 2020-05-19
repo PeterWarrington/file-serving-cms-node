@@ -11,13 +11,17 @@ exports.getHTML = (options, resolutionFunc, rejectionFunc) => {
             }
 
             reviews.forEach(item => {
-                reviewData.push({
-                    reviewUser: item["review-user"],
-                    reviewText: item["review-text"],
-                    reviewRating: item["review-rating"],
-                    reviewDate: item["review-date"].toISOString().split('T')[0],
-                    reviewId: item["review-id"]
-                });
+                if (item.isEnd != true) {
+                    reviewData.push({
+                        reviewUser: item["review-user"],
+                        reviewText: item["review-text"],
+                        reviewRating: item["review-rating"],
+                        reviewDate: item["review-date"].toISOString().split('T')[0],
+                        reviewId: item["review-id"]
+                    });
+                } else {
+                    reviewData.push({isEnd: true});
+                }
             });
 
             if (typeof options.beforeDatetime == "undefined") { // We don't have an access time yet

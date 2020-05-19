@@ -23,6 +23,7 @@ body {
 .review .card{
     padding: 0.1rem;
     border: none;
+    margin-bottom: 5px;
 }
 .review .card-body {
     padding: 0rem;

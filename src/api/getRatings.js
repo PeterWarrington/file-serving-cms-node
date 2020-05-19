@@ -59,30 +59,32 @@ exports.getRoundedRatingsFromObjectArray = (objectArray, callback) => {
 };
 exports.getReviews = (options, callback) => {
     mysqlQueryer.generateDbConnection("read", "public", (con) => {
-        sqlAdditionalWhereClauses = "";
+        var sqlDetails = getSqlClauses(options.alreadyDoneReviewIds, options);
 
-        // Add SQL clause to check reviews are before the date of first access
-        if (typeof options.beforeDatetime != 'undefined') {
-            mysqlDatetime = 
-            sqlAdditionalWhereClauses += " AND `review-date` < '" + 
-            options.beforeDatetime.toISOString().slice(0, 19).replace('T', ' ') // Converts to mysql datetime https://stackoverflow.com/a/44831930/5270231
-            + "'"; 
-        }
+        if (typeof sqlDetails.ids == 'undefined') sqlDetails.ids = [];
 
-        if (typeof options.alreadyDoneReviewIds != 'undefined') {
-            var ids = "'" + options.alreadyDoneReviewIds.join("','") + "'"; // Converts to mysql array format https://stackoverflow.com/questions/43166013/javascript-array-to-mysql-in-list-of-values#comment73406326_43166013
-            sqlAdditionalWhereClauses += " AND `review-id` NOT IN (" + ids + ")";
-        }
         sqlQuery = "\
         SELECT * FROM `project-q`.reviews \
-        WHERE `object-hash-id` = " + con.escape(options.objectId) + sqlAdditionalWhereClauses + "\
-        ORDER BY `review-id` DESC LIMIT 5;";
+        WHERE `object-hash-id` = " + con.escape(options.objectId) + sqlDetails.clauses + "\
+        ORDER BY `review-id` DESC LIMIT 10;";
 
         con.query(sqlQuery, function (err, result) {
             if (err) throw err;
             if (result != null && result.length != 0) {
                 if (result != null && typeof result != 'undefined') {
-                    callback(result);
+                    // add new ids to 'ids' to check if there are any results after these (so we can display that there are no more results)
+                    for (i=0; i < result.length; i++) {
+                        sqlDetails.ids.push(result[i]["review-id"]);
+                    }
+
+                    newAdditionalSqlClauses = getSqlClauses(sqlDetails.ids, options).clauses;
+                    
+                    checkIfEnd(con, objectId, newAdditionalSqlClauses, (isEnd) => {
+                        if (result.length < 10 || isEnd) {
+                            result.push({isEnd: true});
+                        }
+                        callback(result);
+                    });
                 } else {
                     callback([]);
                 }
@@ -92,3 +94,36 @@ exports.getReviews = (options, callback) => {
         });
     });
 };
+
+// Checks if no more results after by requesting the next set
+function checkIfEnd(con, objectId, additionalSqlClauses, callback) {
+    sqlQuery  = "SELECT COUNT(*) `row-count` FROM `project-q`.reviews WHERE `object-hash-id` = " + con.escape(objectId) + additionalSqlClauses;
+
+    con.query(sqlQuery, function (err, result) {
+        if (err) throw err;
+        if (result[0]["row-count"] != undefined && result.length != 0) {
+            callback(result[0]["row-count"] == 0); // true if no results
+        }
+    });
+}
+
+function getSqlClauses(ids, options) {
+    // Add SQL clause to check reviews are before the date of first access
+
+    var clauses = "";
+
+    if (typeof options.beforeDatetime != 'undefined') {
+        clauses += " AND `review-date` < '" + 
+        options.beforeDatetime.toISOString().slice(0, 19).replace('T', ' ') // Converts to mysql datetime https://stackoverflow.com/a/44831930/5270231
+        + "'"; 
+    }
+
+    // Add SQL clause to only get results not already gathered
+    if (typeof options.alreadyDoneReviewIds != 'undefined' && typeof ids == 'undefined') {
+        ids = "'" + options.alreadyDoneReviewIds.join("','") + "'"; // Converts to mysql array format https://stackoverflow.com/questions/43166013/javascript-array-to-mysql-in-list-of-values#comment73406326_43166013
+    }
+
+    if (typeof ids != 'undefined') clauses += " AND `review-id` NOT IN (" + ids + ")";
+
+    return {clauses, ids};
+}

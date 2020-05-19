@@ -36,7 +36,11 @@
 
                 <%- reviewHTML %>
 
-                <button type="button" class="w-100 btn btn-outline-secondary" id="more-review-btn">More reviews...</button>
+                <% if (reviewData.length != 0) if (!reviewData[reviewData.length - 1].isEnd) { %>
+
+                    <button type="button" class="w-100 btn btn-outline-secondary" id="more-review-btn">More reviews...</button>
+
+                <% } %>
             </div>
         </div>
         <div class="col-sm mt-sm">

@@ -1,16 +1,20 @@
 <% for (x = 0; x < reviewData.length; x++) { %>
-    <div class="row mx-0 review" id="review-<%= reviewIDs[x] %>" access-date="<%= reviewAccessTime %>">
-        <div class="col-sm card mt-1 mr-1">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <%- include(process.cwd() + '/res/templates/ratingGenerator') %>
-                    By: <%= reviewData[x].reviewUser %> 
-                </h5>
-                <h6 class="card-subtitle mb-2 text-muted">
-                    Submitted: <%= reviewData[x].reviewDate %>
-                </h6>
-                <p class="card-text"><%= reviewData[x].reviewText %></p>
+    <% if (reviewData[x].isEnd) {%>
+        <span id="end-reviews"></i> <!-- Let script know to remove button -->
+    <% } else { %>
+        <div class="row mx-0 review" id="review-<%= reviewIDs[x] %>" access-date="<%= reviewAccessTime %>">
+            <div class="col-sm card mt-1 mr-1">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <%- include(process.cwd() + '/res/templates/ratingGenerator') %>
+                        By: <%= reviewData[x].reviewUser %> 
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        Submitted: <%= reviewData[x].reviewDate %>
+                    </h6>
+                    <p class="card-text"><%= reviewData[x].reviewText %></p>
+                </div>
             </div>
         </div>
-    </div>
+    <% } %>
 <% } x = 0; %>

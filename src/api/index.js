@@ -43,5 +43,5 @@ app.get('/api/reviews_from_criteria.html', (req,res) => { // e.g: http://localho
 app.listen(port, () => console.log(`Project #Q server has started at http://localhost:${port}`));
 
 process.on('uncaughtException', function(err) { // TODO: Add much better error handling :-q, the user will NOT receive a clean error (ie, will load for ETERNITY), and weird stuff may happen
-    console.log('Caught exception: ' + err);
+    console.log('Caught exception: ' + err.stack);
 });

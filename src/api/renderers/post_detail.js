@@ -42,6 +42,7 @@ exports.main = (req, res, variables) => {
                                 rawDate: result["object-post-date"].toISOString().split('T')[0],
                                 descriptionFull: result["object-description"],
                                 previewImages: JSON.parse(result["object-preview-imgs"]),
+                                notes: result["object-notes"],
                                 fileName: result["object-file-name"],
                                 fileSizeSimple: humanFileSize(result["object-file-size"], true),
                                 tags: JSON.parse(result["object-tags"]),

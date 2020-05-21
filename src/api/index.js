@@ -5,10 +5,13 @@ const config = require(process.cwd() + "/config.js").config
 
 const variables = {
     user: {
-        subjects: [
+        tags: [
             {
-                name: "Subject"
-            }
+                name: "GCSE"
+            },
+            {
+                name: "LOTF"
+            },
     ]}, ...config
 };
 

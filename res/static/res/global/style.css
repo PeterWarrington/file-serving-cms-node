@@ -37,3 +37,6 @@ body {
 .review .card-text {
     font-size: 0.9rem;
 }
+.review-details {
+    margin-top: -10px;
+}

@@ -64,9 +64,11 @@ exports.getReviews = (options, callback) => {
         if (typeof sqlDetails.ids == 'undefined') sqlDetails.ids = [];
 
         sqlQuery = "\
-        SELECT * FROM `project-q`.reviews \
-        WHERE `object-hash-id` = " + con.escape(options.objectId) + sqlDetails.clauses + "\
-        ORDER BY `review-id` DESC LIMIT 7;";
+        SELECT reviews.*, SUM(InnerTable.`review-like-type`) `review-total-likes` \
+        FROM (SELECT * FROM `project-q`.`review-likes`) AS InnerTable \
+        INNER JOIN reviews ON reviews.`review-id` = InnerTable.`review-id` \
+        WHERE reviews.`object-hash-id` = " + con.escape(options.objectId) + sqlDetails.clauses + "\
+        GROUP BY `review-id` ORDER BY `review-total-likes` DESC;" // Add 'total-likes' collumn and order by those likes
 
         con.query(sqlQuery, function (err, result) {
             if (err) throw err;
@@ -113,7 +115,7 @@ function getSqlClauses(ids, options) {
     var clauses = "";
 
     if (typeof options.beforeDatetime != 'undefined') {
-        clauses += " AND `review-date` < '" + 
+        clauses += " AND reviews.`review-date` < '" + 
         options.beforeDatetime.toISOString().slice(0, 19).replace('T', ' ') // Converts to mysql datetime https://stackoverflow.com/a/44831930/5270231
         + "'"; 
     }

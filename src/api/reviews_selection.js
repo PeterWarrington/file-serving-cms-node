@@ -17,7 +17,8 @@ exports.getHTML = (options, resolutionFunc, rejectionFunc) => {
                         reviewText: item["review-text"],
                         reviewRating: item["review-rating"],
                         reviewDate: item["review-date"].toISOString().split('T')[0],
-                        reviewId: item["review-id"]
+                        reviewId: item["review-id"],
+                        reviewLikes: item["review-total-likes"]
                     });
                 } else {
                     reviewData.push({isEnd: true});

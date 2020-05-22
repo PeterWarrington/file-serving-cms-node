@@ -8,6 +8,6 @@ exports.config = {
     },
     google: {
         useGoogleSignIn: true,
-        clientId: "CHANGE_ME"
+        clientId: "447324342102-17birjgedo93hj3b81nhi883mtft4v5q.apps.googleusercontent.com"
     }
 }

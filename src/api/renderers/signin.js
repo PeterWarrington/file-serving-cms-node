@@ -7,7 +7,7 @@ exports.main = (req, res, variables) => {
             pageTitle: "Sign in",
             pageResDirectory: "signin"
         },
-        basics: variables.basics, 
+        basics: variables.basics,
         user: variables.user,
         google: variables.google
     });

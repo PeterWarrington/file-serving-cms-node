@@ -8,6 +8,7 @@ exports.main = (req, res, variables) => {
 
     const {OAuth2Client} = require('google-auth-library');
     const client = new OAuth2Client(CLIENT_ID);
+
     async function verify() {
         const ticket = await client.verifyIdToken({
             idToken: idToken,
@@ -16,17 +17,38 @@ exports.main = (req, res, variables) => {
             //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
         });
         const payload = ticket.getPayload();
-        const userid = payload['sub'];
+        const googleUserId = payload['sub'];
         // If request specified a G Suite domain:
         // const domain = payload['hd'];
 
        // If we've got this far, the user has been verified!
 
-        userUtils.isGoogleUserRegistered(userid).then(isUserRegistered => {
-            res.end("User is registered:" + isUserRegistered);
+        userUtils.signInGoogleUserWithGoogleUserId(googleUserId).then(userDetails => {
+            if (userDetails !== null) {
+                res.end('{"registered": false, \
+                            "user": { \
+                                "type": "google", \
+                                "user-name": "' + userDetails["user-name"] + '", \
+                                "auth-token": "' + userDetails["user-auth-token"] + '" \
+                                } \
+                            }');
+            } else {
+                userUtils.registerUser("google", payload).then(() => {
+                    userUtils.signInGoogleUserWithGoogleUserId(googleUserId).then(userDetails => {
+                        res.end('{"registered": true, \
+                            "user": { \
+                                "type": "google", \
+                                "user-name": "' + userDetails["user-name"] + '", \
+                                "auth-token": "' + userDetails["user-auth-token"] + '" \
+                                } \
+                            }');
+                    });
+                });
+            }
         });
     }
     verify().catch((err) => {
+        console.log(err);
         utils.send404(res, variables);
     });
 };

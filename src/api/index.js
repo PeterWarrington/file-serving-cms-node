@@ -36,8 +36,18 @@ app.get('/search/', (req,res) => {
     require(process.cwd() + '/src/api/search.js').main(req, res, variables);
 });
 
+app.get('/signin', (req,res) => {
+    require(process.cwd() + '/src/api/renderers/signin.js').main(req, res, variables);
+});
+
 app.get('/api/reviews_from_criteria.html', (req,res) => { // e.g: http://localhost/api/reviews_from_criteria.html?objectId=[OBJECT_ID_HERE]&alreadyDoneReviewIds=[COMMA SEPERATED LIST OF IDs]&accessTime=[UNIX TIMESTAMP OF ACCESS OF PAGE]
     require(process.cwd() + '/src/api/renderers/reviews_from_criteria.js').main(req, res, variables);
+});
+
+app.use(express.urlencoded({ extended: true }));
+
+app.post('/api/google-token-sign-in', (req,res) => {
+    require(process.cwd() + '/src/api/renderers/google-token-sign-in.js').main(req, res, variables);
 });
 
 app.listen(port, () => console.log(`Project #Q server has started at http://localhost:${port}`));

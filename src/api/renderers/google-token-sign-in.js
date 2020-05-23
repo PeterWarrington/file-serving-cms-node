@@ -1,8 +1,8 @@
 const utils = require(process.cwd() + "/src/api/utils.js");
 const userUtils = require(process.cwd() + "/src/api/userUtils.js");
 
-exports.main = (req, res, variables) => {
-    const CLIENT_ID = variables.google.clientId;
+exports.main = (req, res) => {
+    const CLIENT_ID = req.variables.google.clientId;
 
     var idToken = req.body.idtoken;
 
@@ -49,6 +49,6 @@ exports.main = (req, res, variables) => {
     }
     verify().catch((err) => {
         console.log(err);
-        utils.send404(res, variables);
+        utils.send404(req,res);
     });
 };

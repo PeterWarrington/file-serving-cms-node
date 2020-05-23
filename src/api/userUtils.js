@@ -7,7 +7,7 @@ exports.signInGoogleUserWithGoogleUserId = googleUserId => {
             con.query(sqlQuery, function (err, results) {
                 if (results != null && !err) {
                     if (results.length == 1) {
-                        exports.updateAuthToken(results[0]["user-name"]).then(token => {
+                        exports.updateAuthToken(results[0]["user-name"]).then((token, tokenExpiryDate) => {
                             results[0]["user-auth-token"] = token;
                             resFunction(results[0]);
                         });
@@ -23,25 +23,53 @@ exports.signInGoogleUserWithGoogleUserId = googleUserId => {
     });
 };
 
+exports.signInUserWithToken = (username, token) => {
+    return new Promise ((resFunction, rejFunction) => {
+        mysqlQueryer.generateDbConnection("read", "public", (con) => {
+            sqlQuery = "SELECT * FROM `project-q`.users WHERE `user-name`=" + con.escape(username) + "\
+            AND `user-auth-token`='" + token + "' AND `user-auth-token-expiry` > NOW();";
+
+            console.log(sqlQuery);
+
+            con.query(sqlQuery, function (err, results) {
+                if (results != null && !err) {
+                    if (results.length == 1) {
+                        exports.updateAuthToken(results[0]["user-name"]).then((token, tokenExpiryDate) => {
+                            results[0]["user-auth-token"] = token;
+                            results[0]["user-auth-token-date-obj"] = tokenExpiryDate;
+                            resFunction(results[0]);
+                        });
+                    } else {
+                        rejFunction(null); // User details not found or incorrect
+                    }
+                } else {
+                    console.error(err);
+                    rejFunction(null);
+                }
+            });
+        });
+    });
+};
+
 exports.updateAuthToken = userName => {
     return new Promise ((resFunction, rejFunction) => {
         require('crypto').randomBytes(48, function(err, buffer) {
             var token = buffer.toString('hex');
-            var tokenExpiry = new Date();
-            tokenExpiry.setDate((tokenExpiry.getDate() + 7)); // Expires 7 days
-            tokenExpiry = tokenExpiry.toISOString().slice(0, 19).replace('T', ' '); // To mysql datetime
+            var tokenExpiryDate = new Date();
+            tokenExpiryDate.setDate((tokenExpiryDate.getDate() + 7)); // Expires 7 days
+            var tokenExpiryDatetime = tokenExpiryDate.toISOString().slice(0, 19).replace('T', ' '); // To mysql datetime
 
             mysqlQueryer.generateDbConnection("write", "public", (con) => {
                 sqlQuery = "UPDATE `project-q`.`users`\
                 SET `user-auth-token` = " + con.escape(token) + ",\
-                `user-auth-token-expiry` = '" + tokenExpiry + "'\
+                `user-auth-token-expiry` = '" + tokenExpiryDatetime + "'\
                 WHERE (`user-name` = " + con.escape(userName) +");";
 
                 console.log(sqlQuery);
                 con.query(sqlQuery, function (err, results) {
                     if (err) throw err;
                     if (results.affectedRows == 1) {
-                        resFunction(token);
+                        resFunction(token, tokenExpiryDate);
                     } else {
                         rejFunction();
                     }
@@ -101,3 +129,27 @@ function generateRandomCharacters(length) {
     }
     return result;
  }
+
+ exports.onPageLoad = (variables, req, res, next) => { // Check if user is authenticated on page load
+    req.variables = variables; // Move variables to req
+
+    var username = req.cookies.username;
+    var authtoken = req.cookies.authtoken;
+
+    if (typeof username == "undefined" || typeof authtoken == "undefined") {
+        req.variables.user.signedIn = false;
+        next();
+    } else {
+        exports.signInUserWithToken(username, authtoken).then((result) => {
+            req.variables.user.signedIn = true;
+            req.variables.user.name = result["user-name"];
+            req.variables.user.email = result["user-email"];
+
+            res.cookie('authtoken', result["user-auth-token"], {expires: result["user-auth-token-date-obj"]});
+            next();
+        }).catch(() => {
+            req.variables.user.signedIn = false;
+            next();
+        });
+    }
+  }

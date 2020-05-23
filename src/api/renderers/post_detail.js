@@ -20,7 +20,7 @@ function humanFileSize(bytes, si) {
     return bytes.toFixed(1)+' '+units[u];
 } // https://stackoverflow.com/a/14919494
 
-exports.main = (req, res, variables) => {
+exports.main = (req, res) => {
     objectId = req.params.objectId;
     mysqlQueryer.generateDbConnection("read", "public", (con) => {
         postData = {};
@@ -77,8 +77,8 @@ exports.main = (req, res, variables) => {
                             pageTitle: postData.title,
                             pageResDirectory: "post_detail"
                         },
-                        basics: variables.basics, 
-                        user: variables.user,
+                        basics: req.variables.basics, 
+                        user: req.variables.user,
                         postData: result.postData,
                         reviewHTML: result.reviewHTML,
                         reviewIDs: result.reviewIDs
@@ -86,7 +86,7 @@ exports.main = (req, res, variables) => {
                 })).catch((err) => {
                     console.log(err);
                     console.log(err.stack);
-                    utils.send404(res, variables);
+                    utils.send404(req,res);
                 });
             } else {
                 throw new Error("Could not get post detail from db. Result is null.");

@@ -1,7 +1,7 @@
 const utils = require(process.cwd() + "/src/api/utils.js");
 const mysqlQueryer = require(process.cwd() + "/src/api/mysqlQueryer.js");
 
-exports.main = (req, res, variables) => {
+exports.main = (req, res) => {
     var objectId = req.params.objectId;
     
     mysqlQueryer.generateDbConnection("read", "public", (con) => {
@@ -20,7 +20,7 @@ exports.main = (req, res, variables) => {
                     res.setHeader('Content-disposition', 'attachment; filename=' + result["object-file-name"]);
                     res.end(fileBuffer);
                 } else { // No result has been returned
-                    utils.send404(res, variables);
+                    utils.send404(req,res);
                 }
             } else {
                 throw new Error("Could not get post detail from db. Result is null.");

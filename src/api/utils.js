@@ -1,4 +1,4 @@
-exports.send404 = (res, variables) => {
+exports.send404 = (req, res) => {
     res.status(404);
     res.render('error', {
         pageDetails: {
@@ -9,12 +9,12 @@ exports.send404 = (res, variables) => {
             errorTitle: "Error 404: Page not found",
             errorDescription: "The page you have requested could not be found. Try using the search bar or you can try <a href='/'>going home</a>."
         },
-        basics: variables.basics, 
-        user: variables.user
+        basics: req.variables.basics, 
+        user: req.variables.user
     });
 }
 
-exports.sendOtherError = (res, variables, httpCode, errorMsg) => {
+exports.sendOtherError = (req, res, httpCode, errorMsg) => {
     res.status(httpCode);
     res.render('error', {
         pageDetails: {
@@ -25,7 +25,7 @@ exports.sendOtherError = (res, variables, httpCode, errorMsg) => {
             errorTitle: "Error " + httpCode.toString() + " - " + errorMsg.short,
             errorDescription: errorMsg.long,
         },
-        basics: variables.basics, 
-        user: variables.user
+        basics: req.variables.basics, 
+        user: req.variables.user
     });
 }

@@ -6,7 +6,7 @@ const getRatings = require(process.cwd() + "/src/api/getRatings.js");
 
 const getClassNameForExtension = require('font-awesome-filetypes').getClassNameForExtension;
 
-exports.main = (req, res, variables) => {
+exports.main = (req, res) => {
     TimeAgo.addLocale(en);
     mysqlQueryer.generateDbConnection("read", "public", (con) => {
         sqlQuery = "\
@@ -52,8 +52,8 @@ exports.main = (req, res, variables) => {
                             pageTitle: "Home",
                             pageResDirectory: "homepage"
                         },
-                        basics: variables.basics, 
-                        user: variables.user,
+                        basics: req.variables.basics, 
+                        user: req.variables.user,
                         generatorData: {
                             maxToGenerate: 8,
                             maxPerRow: 2,
@@ -63,7 +63,7 @@ exports.main = (req, res, variables) => {
                 });
                 
             } else {
-                utils.sendOtherError(res, variables, 500, {
+                utils.sendOtherError(req,res, 500, {
                     short: "Could not fetch popular posts from database",
                     long: ""
                 })

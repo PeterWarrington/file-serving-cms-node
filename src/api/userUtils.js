@@ -23,6 +23,31 @@ exports.signInGoogleUserWithGoogleUserId = googleUserId => {
     });
 };
 
+exports.signInUserWithToken = (username, token) => {
+    return new Promise ((resFunction, rejFunction) => {
+        mysqlQueryer.generateDbConnection("read", "public", (con) => {
+            sqlQuery = "SELECT * FROM `project-q`.users WHERE `user-name`=" + con.escape(username) + "\
+            AND `user-auth-token`='" + token + "' AND `user-auth-token-expiry` > NOW();";
+
+            con.query(sqlQuery, function (err, results) {
+                if (results != null && !err) {
+                    if (results.length == 1) {
+                        exports.updateAuthToken(results[0]["user-name"]).then(token => {
+                            results[0]["user-auth-token"] = token;
+                            resFunction(results[0]);
+                        });
+                    } else {
+                        rejFunction(null); // User details not found or incorrect
+                    }
+                } else {
+                    console.error(err);
+                    rejFunction(null);
+                }
+            });
+        });
+    });
+};
+
 exports.updateAuthToken = userName => {
     return new Promise ((resFunction, rejFunction) => {
         require('crypto').randomBytes(48, function(err, buffer) {
@@ -101,3 +126,25 @@ function generateRandomCharacters(length) {
     }
     return result;
  }
+
+ exports.onPageLoad = (variables, req, res, next) => { // Check if user is authenticated on page load
+    req.variables = variables; // Move variables to req
+
+    var username = req.cookies.username;
+    var authtoken = req.cookies.authtoken;
+
+    if (typeof username == "undefined" || typeof authtoken == "undefined") {
+        req.variables.user.signedIn = false;
+        next();
+    } else {
+        exports.signInUserWithToken(username, authtoken).then((result) => {
+            req.variables.user.signedIn = true;
+            req.variables.user.name = result["user-name"];
+            req.variables.user.email = result["user-email"];
+            next();
+        }).catch(() => {
+            req.variables.user.signedIn = false;
+            next();
+        });
+    }
+  }

@@ -11,7 +11,7 @@ var client = new elasticsearch.Client({
   host: 'localhost:9200/objects'
 });
 
-exports.main = async (req, res, variables) => {
+exports.main = async (req, res) => {
     var queryStr = req.query.q;
 
     (async (queryStr) => {
@@ -78,8 +78,8 @@ exports.main = async (req, res, variables) => {
                         pageTitle: "Search: " + queryStr,
                         pageResDirectory: "search"
                     },
-                    basics: variables.basics, 
-                    user: variables.user,
+                    basics: req.variables.basics, 
+                    user: req.variables.user,
                     searchQ: queryStr,
                     generatorData: {
                         maxToGenerate: 50,

@@ -1,13 +1,13 @@
 const ratings_selection = require(process.cwd() + "/src/api/reviews_selection.js");
 const utils = require(process.cwd() + "/src/api/utils.js");
 
-exports.main = (req, res, variables) => {
+exports.main = (req, res) => {
     let options = {};
 
     if (typeof req.query.objectId != "undefined" && req.query.objectId != "") {
         options.objectId = req.query.objectId;
     } else {
-        utils.send404(res, variables);
+        utils.send404(req,res);
         return;
     }
 

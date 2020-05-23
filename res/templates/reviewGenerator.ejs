@@ -17,16 +17,18 @@
                     </p>
 
                     <div class="review-details">
-                        <span class="text-secondary"><%= reviewData[x].reviewLikes %> likes </span>
-                        <button type="button" class="btn btn-outline-secondary btn-sm">
-                            <i class="far fa-thumbs-up" aria-hidden="true"></i>
-                            Like
-                        </button>
+                        <span class="text-secondary">
+                            <span class="like-count"><%= reviewData[x].reviewLikes %></span> likes 
+                        </span>
+                        <a role="button" href="#" class="btn btn-outline-secondary btn-sm <% if (!user.signedIn) { %> not-logged-in <% } %> ">
+                                <i class="far fa-thumbs-up" aria-hidden="true"></i>
+                                Like
+                        </a>
 
-                        <button type="button" class="btn btn-outline-secondary btn-sm">
+                        <a role="button"  href="#" class="btn btn-outline-secondary btn-sm <% if (!user.signedIn) { %> not-logged-in <% } %> " >
                             <i class="far fa-thumbs-down" aria-hidden="true"></i> 
                             Dislike
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>

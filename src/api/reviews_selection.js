@@ -35,7 +35,8 @@ exports.getHTML = (options, resolutionFunc, rejectionFunc) => {
                 {
                     reviewData: reviewData, 
                     reviewIDs: reviewData.map(a => a.reviewId),
-                    reviewAccessTime: reviewAccessTime
+                    reviewAccessTime: reviewAccessTime,
+                    ...options
                 }, {}, 
                 function(err, html){
                     result = {

@@ -40,3 +40,8 @@ body {
 .review-details {
     margin-top: -10px;
 }
+.toast {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+}

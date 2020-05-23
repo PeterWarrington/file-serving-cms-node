@@ -61,7 +61,8 @@ exports.main = (req, res) => {
                 }).then(postData => new Promise((resolutionFunc, rejectionFunc) => {
                     new Promise ((htmlResolutionFunc, htmlRejectionFunc) => {
                         let options = {
-                            objectId: objectId
+                            objectId: objectId,
+                            ...req.variables
                         };
                         ratings_selection.getHTML(options, htmlResolutionFunc, rejectionFunc)
                     }).then(result => resolutionFunc(

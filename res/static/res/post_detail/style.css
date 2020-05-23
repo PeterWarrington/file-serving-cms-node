@@ -1,0 +1,6 @@
+.not-logged-in {
+    opacity: .65;
+    background-color: transparent !important;
+    color: initial !important;
+    text-decoration: none !important;
+}

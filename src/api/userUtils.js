@@ -29,8 +29,6 @@ exports.signInUserWithToken = (username, token) => {
             sqlQuery = "SELECT * FROM `project-q`.users WHERE `user-name`=" + con.escape(username) + "\
             AND `user-auth-token`='" + token + "' AND `user-auth-token-expiry` > NOW();";
 
-            console.log(sqlQuery);
-
             con.query(sqlQuery, function (err, results) {
                 if (results != null && !err) {
                     if (results.length == 1) {
@@ -65,7 +63,6 @@ exports.updateAuthToken = userName => {
                 `user-auth-token-expiry` = '" + tokenExpiryDatetime + "'\
                 WHERE (`user-name` = " + con.escape(userName) +");";
 
-                console.log(sqlQuery);
                 con.query(sqlQuery, function (err, results) {
                     if (err) throw err;
                     if (results.affectedRows == 1) {
@@ -99,7 +96,6 @@ exports.registerUser = (userType, data) => {
         mysqlQueryer.generateDbConnection("write", "public", (con) => {
             sqlQuery = "INSERT INTO `project-q`.`users` (`" + Object.keys(registerDetails).join("`,`") + "`) VALUES ('" + Object.values(registerDetails).join("','") + "')";
 
-            console.log(sqlQuery);
             con.query(sqlQuery, function (err, results) {
                 if (err) {
                     if (err.message.indexOf("ER_DUP_ENTRY") != -1) { // Duplicate username

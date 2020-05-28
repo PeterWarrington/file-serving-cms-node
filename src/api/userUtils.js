@@ -145,3 +145,14 @@ function generateRandomCharacters(length) {
         });
     }
   }
+
+exports.sign_out = (req, res) => {
+    res.clearCookie("username");
+    res.clearCookie('authtoken');
+
+    if (typeof req.query.referer == "undefined") {
+        req.query.referer = "/";
+    }
+
+    res.redirect(req.query.referer);
+}

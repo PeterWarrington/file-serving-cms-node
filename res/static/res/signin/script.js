@@ -11,7 +11,11 @@ function onSignIn(googleUser) {
             document.cookie = "username=" + userDetails["user"]["user-name"] + "; expires=2099-12-30 00:00:00";
             document.cookie = "authtoken=" + userDetails["user"]["auth-token"] + "; expires=2099-12-30 00:00:00";
 
-            window.location.replace("http://localhost/");
+            if (typeof referer == "undefined") {
+                referer = "/";
+            }
+
+            window.location.replace(referer);
         }
     };
     xhr.send('idtoken=' + id_token);

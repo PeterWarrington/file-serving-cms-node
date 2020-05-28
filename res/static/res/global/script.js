@@ -19,6 +19,12 @@ window.onload = (ev) => {
             searchEnterDetect(event);
         }
     }
+
+    if (document.getElementById("sign-out-btn") !== null)
+        document.getElementById("sign-out-btn").onclick = signOut;
+
+    if (document.getElementById("sign-in-btn") !== null)
+        document.getElementById("sign-in-btn").onclick = signIn;
 }
 
 function searchAction(event) {
@@ -36,4 +42,12 @@ function likeBtnClick(event) {
     if (event.srcElement.classList.contains("not-logged-in")) {
         $('.toast').toast('show');
     }
+}
+
+function signOut(event) {
+    window.location.replace("/signout?referer=" + window.location.href);
+}
+
+function signIn(event) {
+    window.location.replace("/signin?referer=" + window.location.href);
 }

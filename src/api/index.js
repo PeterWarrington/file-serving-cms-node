@@ -49,6 +49,12 @@ app.get('/signin', (req,res) => {
     require(process.cwd() + '/src/api/renderers/signin.js').main(req, res);
 });
 
+app.get('/signout', (req,res) => {
+    require(process.cwd() + '/src/api/userUtils.js').sign_out(req, res);
+});
+
+// API bits
+
 app.get('/api/reviews_from_criteria.html', (req,res) => { // e.g: http://localhost/api/reviews_from_criteria.html?objectId=[OBJECT_ID_HERE]&alreadyDoneReviewIds=[COMMA SEPERATED LIST OF IDs]&accessTime=[UNIX TIMESTAMP OF ACCESS OF PAGE]
     require(process.cwd() + '/src/api/renderers/reviews_from_criteria.js').main(req, res);
 });

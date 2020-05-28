@@ -60,15 +60,23 @@
             </div>
 
             <% if (!user.signedIn) { %>
-                <a href="/signin" class="btn btn-primary my-lg-0" role="button">
+                <button class="btn btn-primary my-lg-0" type="button" id="sign-in-btn">
                     Sign in
-                </a>
+                </button>
             <% } %>
 
             <% if (user.signedIn) { %>
-                <a href="#" class="btn btn-primary my-lg-0" role="button">
-                    <i class="fas fa-user"></i> <%= user.name %>
-                </a>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user"></i> <%= user.name %>
+                        </a>
+                        <div class="dropdown-menu">
+                            <button type="button" class="dropdown-item btn btn-link" id="sign-out-btn">Sign out</button>
+                            <a class="dropdown-item" href="#">Settings</a>
+                        </div>
+                    </li>
+                </ul>
             <% } %>
         </div>
     </nav>

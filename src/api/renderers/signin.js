@@ -9,6 +9,7 @@ exports.main = (req, res) => {
         },
         basics: req.variables.basics,
         user: req.variables.user,
-        google: req.variables.google
+        google: req.variables.google,
+        referer: req.query.referer
     });
 };

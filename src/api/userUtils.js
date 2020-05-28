@@ -32,11 +32,7 @@ exports.signInUserWithToken = (username, token) => {
             con.query(sqlQuery, function (err, results) {
                 if (results != null && !err) {
                     if (results.length == 1) {
-                        exports.updateAuthToken(results[0]["user-name"]).then((token, tokenExpiryDate) => {
-                            results[0]["user-auth-token"] = token;
-                            results[0]["user-auth-token-date-obj"] = tokenExpiryDate;
-                            resFunction(results[0]);
-                        });
+                        resFunction(results[0]);
                     } else {
                         rejFunction(null); // User details not found or incorrect
                     }

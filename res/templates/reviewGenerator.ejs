@@ -20,15 +20,15 @@
                         <span class="text-secondary">
                             <span class="like-count"><%= reviewData[x].reviewLikes %></span> likes 
                         </span>
-                        <a role="button" href="#" class="btn btn-outline-secondary btn-sm <% if (!user.signedIn) { %> not-logged-in <% } %> ">
+                        <button role="button" class="<%= reviewData[x].reviewBtnClasses.like %> <% if (!user.signedIn) { %> not-logged-in <% } %> ">
                                 <i class="far fa-thumbs-up" aria-hidden="true"></i>
                                 Like
-                        </a>
+                        </button>
 
-                        <a role="button"  href="#" class="btn btn-outline-secondary btn-sm <% if (!user.signedIn) { %> not-logged-in <% } %> " >
+                        <button role="button" class="<%= reviewData[x].reviewBtnClasses.dislike %> <% if (!user.signedIn) { %> not-logged-in <% } %> " >
                             <i class="far fa-thumbs-down" aria-hidden="true"></i> 
                             Dislike
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

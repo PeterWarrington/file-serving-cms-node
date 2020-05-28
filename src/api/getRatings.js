@@ -1,4 +1,5 @@
 const mysqlQueryer = require(process.cwd() + "/src/api/mysqlQueryer.js");
+const review_like_utils = require(process.cwd() + "/src/api/review_like_utils.js");
 
 exports.round_to_precision = (x, precision)  => {
     var y = +x + (precision === undefined ? 0.5 : precision/2);
@@ -85,7 +86,23 @@ exports.getReviews = (options, callback) => {
                         if (result.length < 7 || isEnd) {
                             result.push({isEnd: true});
                         }
-                        callback(result);
+
+                        if (typeof options.user.name !== "undefined") {
+                            review_like_utils.checkIfUserAlreadyLikedReviews(options.user.name, sqlDetails.ids)
+                            .then((resultArray) => {
+                                for (i=0; i < resultArray.length; i++) {
+                                    reviewIdIndex = sqlDetails.ids.indexOf(resultArray[i].reviewId);
+                                    if (reviewIdIndex != -1) {
+                                        result[reviewIdIndex]["review-liked-by-user"] = true;
+                                        result[reviewIdIndex]["review-user-like-type"] = resultArray[i].likeType;
+                                    }
+                                }
+
+                                callback(result);
+                            });
+                        } else {
+                            callback(result);
+                        }
                     });
                 } else {
                     callback([]);

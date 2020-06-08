@@ -43,3 +43,40 @@ exports.checkIfUserAlreadyLikedReviews = (user, reviewId) => {
         });
     });
 };
+
+// Attempts a review like or dislike on a review ID given the review id and like ammount as a request param
+exports.attemptReviewLikeOrDislike = (req, res) => {
+    if (req.variables.user.signedIn) {
+        var reviewId = req.query.reviewId;
+        var likeAmmount = req.query.likeAmmount;
+        var username = req.variables.user.name;
+
+        mysqlQueryer.generateDbConnection("write", "public", (con) => {
+            // Insert like into table but only if not already liked (where it will update 0 rows)
+            sqlQuery = "\
+            INSERT INTO `project-q`.`review-likes` (`review-id`, `review-like-type`, `review-like-user`) \
+            SELECT '" + con.escape(reviewId) + "', '" + con.escape(likeAmmount) + "', '" + con.escape(username) + "' \
+            WHERE ( \
+                SELECT COUNT(*) \
+                FROM `review-likes` \
+                WHERE `review-id` = '" + con.escape(reviewId) +"'  \
+                AND `review-like-user` = '" + con.escape(username) + "' \
+            ) = 0;";
+
+            con.query(sqlQuery, function (err, results) {
+                if (err) {
+                    utils.sendNonHtmlOtherError(req, res, 500, "UNHANDELED_DB_ERR");
+                };
+
+                if (results.affectedRows == 1) {
+                    res.end("{'success': 'true'}");
+                } else if (results.affectedRows == 0) {
+                    // (Probably) means user has already liked
+                    utils.sendNonHtmlOtherError(req, res, 409, "REVIEW_LIKE_CONFLICT");
+                }
+            });
+        });
+    } else {
+        utils.sendNonHtmlOtherError(req, res, 401, "USER_NOT_AUTHENTICATED");
+    }
+};

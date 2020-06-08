@@ -59,6 +59,10 @@ app.get('/api/reviews_from_criteria.html', (req,res) => { // e.g: http://localho
     require(process.cwd() + '/src/api/renderers/reviews_from_criteria.js').main(req, res);
 });
 
+app.get('/api/attempt_review_like_or_dislike.json', (req,res) => { // e.g: .http://localhost/api/attempt_review_like_or_dislike.json?reviewId=[REVIEW_ID]&likeAmmount=[1 or -1]
+    require(process.cwd() + '/src/api/review_like_utils.js').attemptReviewLikeOrDislike(req, res);
+});
+
 app.use(express.urlencoded({ extended: true }));
 
 app.post('/api/google-token-sign-in', (req,res) => {

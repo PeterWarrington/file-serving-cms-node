@@ -123,6 +123,7 @@ function generateRandomCharacters(length) {
  }
 
  exports.onPageLoad = (variables, req, res, next) => { // Check if user is authenticated on page load
+    res.set({ 'content-type': 'text/html; charset=utf-8' }); // set charset
     req.variables = variables; // Move variables to req
 
     var username = req.cookies.username;

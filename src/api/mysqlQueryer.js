@@ -6,7 +6,8 @@ exports.generateDbConnection = (readOrWrite, type, callback) => {
         host: config.databaseServer,
         user: readOrWrite + "_" + type,
         password: config.databasePass + readOrWrite + "_" + type,
-        database: "project-q"
+        database: "project-q",
+        charset : 'utf8mb4'
     });
 
     if (callback != null) {

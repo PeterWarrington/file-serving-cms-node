@@ -32,5 +32,5 @@ exports.sendOtherError = (req, res, httpCode, errorMsg) => {
 
 exports.sendNonHtmlOtherError = (req, res, httpCode, errorCode) => {
     res.status(httpCode);
-    res.end("{'success': 'false', 'errorStatusCode': " + httpCode.toString() +", 'internalErrorCode': '" + errorCode + "'}");
+    res.end('{"success": "false", "errorStatusCode": ' + httpCode.toString() +', "internalErrorCode": "' + errorCode + '"}');
 };

@@ -15,6 +15,10 @@ exports.getHTML = (options, resolutionFunc, rejectionFunc) => {
 
             reviews.forEach(item => {
                 if (item.isEnd != true) {
+                    if (item["review-total-likes"] == null) {
+                        item["review-total-likes"] = 0;
+                    }
+
                     itemReviewData = {
                         reviewUser: item["review-user"],
                         reviewText: item["review-text"],

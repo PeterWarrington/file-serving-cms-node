@@ -1,10 +1,6 @@
 const utils = require(process.cwd() + "/src/api/utils.js");
 const mysqlQueryer = require(process.cwd() + "/src/api/mysqlQueryer.js");
 
-exports.main = () => {
-    return exports.checkIfUserAlreadyLikedReview("peter", 1);
-};
-
 // Returns an array of all the reviews in `reviewId` that the `user` has liked
 exports.checkIfUserAlreadyLikedReviews = (user, reviewId) => {
     return new Promise ((resFunction, rejFunction) => {
@@ -55,17 +51,20 @@ exports.attemptReviewLikeOrDislike = (req, res) => {
             // Insert like into table but only if not already liked (where it will update 0 rows)
             sqlQuery = "\
             INSERT INTO `project-q`.`review-likes` (`review-id`, `review-like-type`, `review-like-user`) \
-            SELECT '" + con.escape(reviewId) + "', '" + con.escape(likeAmmount) + "', '" + con.escape(username) + "' \
+            SELECT " + con.escape(reviewId) + ", " + con.escape(likeAmmount) + ", " + con.escape(username) + " \
             WHERE ( \
                 SELECT COUNT(*) \
                 FROM `review-likes` \
-                WHERE `review-id` = '" + con.escape(reviewId) +"'  \
-                AND `review-like-user` = '" + con.escape(username) + "' \
+                WHERE `review-id` = " + con.escape(reviewId) +"  \
+                AND `review-like-user` = " + con.escape(username) + " \
             ) = 0;";
 
             con.query(sqlQuery, function (err, results) {
                 if (err) {
                     utils.sendNonHtmlOtherError(req, res, 500, "UNHANDELED_DB_ERR");
+                    console.log(sqlQuery);
+                    console.log(err);
+                    return;
                 };
 
                 if (results.affectedRows == 1) {
@@ -78,5 +77,34 @@ exports.attemptReviewLikeOrDislike = (req, res) => {
         });
     } else {
         utils.sendNonHtmlOtherError(req, res, 401, "USER_NOT_AUTHENTICATED");
+    }
+};
+
+exports.attemptRemoveReviewLikeOrDislike = (req, res) => {
+    if (req.variables.user.signedIn) {
+        var reviewId = req.query.reviewId;
+        var username = req.variables.user.name;
+
+        mysqlQueryer.generateDbConnection("write", "public", (con) => {
+            sqlQuery = "\
+            DELETE FROM `project-q`.`review-likes` \
+            WHERE `review-id` = " + con.escape(reviewId) + "\
+            AND `review-like-user` = " + con.escape(username) + ";";
+
+            con.query(sqlQuery, function (err, results) {
+                if (err) {
+                    utils.sendNonHtmlOtherError(req, res, 500, "UNHANDELED_DB_ERR");
+                    console.log(sqlQuery);
+                    console.log(err);
+                    return;
+                };
+
+                if (results.affectedRows == 1) {
+                    res.end("{'success': 'true'}");
+                } else if (results.affectedRows == 0) {
+                    utils.sendNonHtmlOtherError(req, res, 400, "NO_ROWS_AFFECTED");
+                }
+            });
+        });
     }
 };

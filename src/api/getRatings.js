@@ -67,7 +67,7 @@ exports.getReviews = (options, callback) => {
         sqlQuery = "\
         SELECT reviews.*, SUM(InnerTable.`review-like-type`) `review-total-likes` \
         FROM (SELECT * FROM `project-q`.`review-likes`) AS InnerTable \
-        INNER JOIN reviews ON reviews.`review-id` = InnerTable.`review-id` \
+        RIGHT JOIN reviews ON reviews.`review-id` = InnerTable.`review-id` \
         WHERE reviews.`object-hash-id` = " + con.escape(options.objectId) + sqlDetails.clauses + "\
         GROUP BY `review-id` ORDER BY `review-total-likes` DESC;" // Add 'total-likes' collumn and order by those likes
 

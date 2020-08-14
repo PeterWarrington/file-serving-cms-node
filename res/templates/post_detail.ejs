@@ -45,6 +45,42 @@
             <div id="review-container">
                 <h4>Reviews:</h4>
 
+                <div id="review-entry-container" style="
+                    padding: 15px;
+                    background-color: #f2f2f2;
+                    border: #d8d8d8 0.1px solid;
+                    border-radius: 3px;
+                ">
+                    <% if (user.signedIn) { %>
+                        <label>Rating:</label>
+
+                        <div class="input-group">
+                            <button class="btn btn-outline-secondary form-control input-star-btn" id="input-star-btn-1"><i class="fas fa-star" aria-hidden="true"></i></button>
+                            <button class="btn btn-outline-secondary form-control input-star-btn" id="input-star-btn-2"><i class="fas fa-star" aria-hidden="true"></i></button>
+                            <button class="btn btn-outline-secondary form-control input-star-btn" id="input-star-btn-3"><i class="fas fa-star" aria-hidden="true"></i></button>
+                            <button class="btn btn-outline-secondary form-control input-star-btn" id="input-star-btn-4"><i class="fas fa-star" aria-hidden="true"></i></button>
+                            <button class="btn btn-outline-secondary form-control input-star-btn" id="input-star-btn-5"><i class="fas fa-star" aria-hidden="true"></i></button>
+                        </div>
+                        
+                        <label for="review-submit">Review text <span class="text-secondary">(optional)</span>:</label>
+
+                        <div class="input-group">
+                            <textarea class="form-control" id="review-text" rows="3" placeholder="Enter review..."></textarea>
+                            <div class="input-group-append" id="review-submit">
+                                <button class="btn btn-outline-primary" type="button" style="
+                                background-color: #2f8750 !important;
+                                border: #000 !important;
+                                color:  #fff !important;">
+                                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        You must <a href="/signin">sign-in</a> to create reviews.
+                    <% } %>
+                </div>
+                <br/>
+
                 <%- reviewHTML %>
 
                 <% if (reviewData.length != 0) if (!reviewData[reviewData.length - 1].isEnd) { %>

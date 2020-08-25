@@ -69,6 +69,10 @@ app.post('/api/attempt_remove_review_like_or_dislike.json', (req,res) => { // e.
 
 app.use(express.urlencoded({ extended: true }));
 
+app.post('/api/submit_review', (req,res) => { // e.g: http://localhost/api/submit_review
+    require(process.cwd() + '/src/api/submitReview.js').main(req, res);
+});
+
 app.post('/api/google-token-sign-in', (req,res) => {
     require(process.cwd() + '/src/api/renderers/google-token-sign-in.js').main(req, res);
 });

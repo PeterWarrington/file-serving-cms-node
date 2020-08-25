@@ -1,3 +1,37 @@
+<div class="row mx-0 review" id="template-review" access-date="" style="display: none">
+    <div class="col-sm card mt-1 mr-1">
+        <div class="card-body">
+            <h5 class="card-title">
+                <span id="template-review-star-count" class="star-count">
+
+                </span>
+                By: <span id="template-review-user"></span>
+            </h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+                Submitted: <span id="template-review-date"></span>
+            </h6>
+            <p class="card-text">
+                <span id="template-review-text"></span>
+            </p>
+
+            <div class="review-details">
+                <span class="text-secondary">
+                    <span class="like-count">0</span> likes 
+                </span>
+                <button role="button" class="btn btn-outline-secondary btn-sm <% if (!user.signedIn) { %> not-logged-in <% } %> " disabled>
+                        <i class="far fa-thumbs-up" aria-hidden="true"></i>
+                        Like
+                </button>
+
+                <button role="button" class="btn btn-outline-secondary btn-sm <% if (!user.signedIn) { %> not-logged-in <% } %> " disabled>
+                    <i class="far fa-thumbs-down" aria-hidden="true"></i> 
+                    Dislike
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <% for (x = 0; x < reviewData.length; x++) { %>
     <% if (reviewData[x].isEnd) {%>
         <span id="end-reviews"></i> <!-- Let script know to remove button -->

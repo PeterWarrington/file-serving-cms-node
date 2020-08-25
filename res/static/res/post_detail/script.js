@@ -27,6 +27,52 @@ function loadMoreReviews() {
     xmlHttp.send(null);
 }
 
+function sendReview(reviewText, reviewRating) {
+    reviewObjectId = window.location.pathname.split("/")[window.location.pathname.split("/").length - 1]; // Get last portion of url path (the object id)
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            reviewSuccess(reviewText, reviewRating);
+        } else if (this.readyState == 4 && this.status != 200) {
+            var errorInfo = JSON.parse(xhttp.responseText);
+            if (errorInfo.internalErrorCode == "REVIEW_ALREADY_WRITTEN") {
+                document.getElementsByClassName("toast-body")[0].innerHTML = "You have already submitted a review for this post.";
+                $('.toast').toast('show');
+            } else {
+                document.getElementsByClassName("toast-body")[0].innerHTML = "Unable to submit review. Error code: " + errorInfo.internalErrorCode;
+                $('.toast').toast('show');
+            }
+        }
+    };
+    xhttp.open("POST", "/api/submit_review", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("reviewRating=" + reviewRating + "&reviewText=" + reviewText + "&reviewObjectId=" + reviewObjectId);
+}
+
+function reviewSuccess(reviewText, reviewRating) {
+    document.getElementById("template-review-user").innerHTML = getCookie("username");
+    document.getElementById("template-review-date").innerHTML = new Date().toISOString().slice(0, 19).replace('T', ' ').split(" ")[0];
+    document.getElementById("template-review-text").innerHTML = reviewText;
+    document.getElementById("template-review").style = "display: block";
+
+    starCountHTML = "";
+
+    var i = 1;
+    while (i <= Math.floor(reviewRating)) {
+        starCountHTML += '<i class="fas fa-star"></i>';
+        i++;
+    } 
+    i -= 1;
+
+    while (i < 5) {
+        starCountHTML += '<i class="far fa-star"></i>';
+        i++;
+    }
+
+    document.getElementById("template-review-star-count").innerHTML = starCountHTML;
+}
+
 window.addEventListener("load", async (event) => {
     try {
         document.getElementById("more-review-btn").addEventListener('click', function(event) {
@@ -89,6 +135,7 @@ window.addEventListener("load", async (event) => {
             for (i=0; i<inputStarBtns.length; i++) {
                 starBtnInner = inputStarBtns[i];
                 starBtnNumberClicked = parseInt(event.srcElement.id.slice(-1));
+                document.getElementById("star-rating-choice").value = starBtnNumberClicked
 
                 starBtnInner.onmouseout = function(event) {
                     for (x=0; x<inputStarBtns.length; x++) {
@@ -105,5 +152,23 @@ window.addEventListener("load", async (event) => {
         });
     };
 
+    document.getElementById("review-submit").addEventListener('click', function(event) {
+        reviewText = document.getElementById("review-text").value;
+        reviewRating = document.getElementById("star-rating-choice").value;
+
+        if (reviewRating == null || reviewRating == "") {
+            document.getElementsByClassName("toast-body")[0].innerHTML = "You must rate this post to submit a review.";
+            $('.toast').toast('show');
+        } else {
+            sendReview(reviewText, reviewRating);
+        }
+    });
+
     window.onscroll(null);
 });
+
+// https://stackoverflow.com/a/21125098
+function getCookie(name) {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
+  }

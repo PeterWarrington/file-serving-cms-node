@@ -57,7 +57,7 @@ function likeBtnClick(event) {
 
 function getReviewId(event) {
     var reviewId = event.srcElement.closest(".review").id;
-    reviewId = reviewId.charAt(reviewId.length - 1); /// e.g: 'review-1' -> '1'
+    reviewId = reviewId.split("-")[1]; /// e.g: 'review-1' -> '1'
 
     return reviewId;
 }

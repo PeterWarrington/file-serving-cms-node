@@ -54,12 +54,14 @@
                         <span class="text-secondary">
                             <span class="like-count"><%= reviewData[x].reviewLikes %></span> likes 
                         </span>
-                        <button role="button" class="<%= reviewData[x].reviewBtnClasses.like %> <% if (!user.signedIn) { %> not-logged-in <% } %> ">
+                        <button role="button" class="<%= reviewData[x].reviewBtnClasses.like %> <% if (!user.signedIn) { %> not-logged-in <% } %>"
+                        <% if (reviewData[x].reviewUser == user.name) { %> disabled <% } // If same user who created review %>>
                                 <i class="far fa-thumbs-up" aria-hidden="true"></i>
                                 Like
                         </button>
 
-                        <button role="button" class="<%= reviewData[x].reviewBtnClasses.dislike %> <% if (!user.signedIn) { %> not-logged-in <% } %> " >
+                        <button role="button" class="<%= reviewData[x].reviewBtnClasses.dislike %> <% if (!user.signedIn) { %> not-logged-in <% } %>" 
+                        <% if (reviewData[x].reviewUser == user.name) { %> disabled <% } %>>
                             <i class="far fa-thumbs-down" aria-hidden="true"></i> 
                             Dislike
                         </button>

@@ -40,6 +40,24 @@ exports.checkIfUserAlreadyLikedReviews = (user, reviewId) => {
     });
 };
 
+function checkIfUserCreatedReview(username, reviewID, trueFunc, falseFunc) {
+    mysqlQueryer.generateDbConnection("read", "public", (con) => {
+        sqlQuery = "SELECT `review-user` FROM `reviews` WHERE `review-id`=" + con.escape(reviewID);
+
+        con.query(sqlQuery, function (err, result) {
+            if (err) throw err;
+
+            reviewCreator = result[0]["review-user"];
+
+            if (username == reviewCreator) {
+                trueFunc();
+            } else {
+                falseFunc();
+            }
+        });
+    });
+}
+
 // Attempts a review like or dislike on a review ID given the review id and like ammount as a request param
 exports.attemptReviewLikeOrDislike = (req, res) => {
     if (req.variables.user.signedIn) {
@@ -47,32 +65,38 @@ exports.attemptReviewLikeOrDislike = (req, res) => {
         var likeAmmount = req.query.likeAmmount;
         var username = req.variables.user.name;
 
-        mysqlQueryer.generateDbConnection("write", "public", (con) => {
-            // Insert like into table but only if not already liked (where it will update 0 rows)
-            sqlQuery = "\
-            INSERT INTO `project-q`.`review-likes` (`review-id`, `review-like-type`, `review-like-user`) \
-            SELECT " + con.escape(reviewId) + ", " + con.escape(likeAmmount) + ", " + con.escape(username) + " \
-            WHERE ( \
-                SELECT COUNT(*) \
-                FROM `review-likes` \
-                WHERE `review-id` = " + con.escape(reviewId) +"  \
-                AND `review-like-user` = " + con.escape(username) + " \
-            ) = 0;";
-
-            con.query(sqlQuery, function (err, results) {
-                if (err) {
-                    utils.sendNonHtmlOtherError(req, res, 500, "UNHANDELED_DB_ERR");
-                    console.log(sqlQuery);
-                    console.log(err);
-                    return;
-                };
-
-                if (results.affectedRows == 1) {
-                    res.end("{'success': 'true'}");
-                } else if (results.affectedRows == 0) {
-                    // (Probably) means user has already liked
-                    utils.sendNonHtmlOtherError(req, res, 409, "REVIEW_LIKE_CONFLICT");
-                }
+        checkIfUserCreatedReview(username, reviewId, () => {
+            // User has created review
+            utils.sendNonHtmlOtherError(req, res, 400, "REVIEW_LIKE_DISALOWED_FOR_REVIEW_CREATOR");
+        }, () => {
+            // User did not create review
+            mysqlQueryer.generateDbConnection("write", "public", (con) => {
+                // Insert like into table but only if not already liked (where it will update 0 rows)
+                sqlQuery = "\
+                INSERT INTO `project-q`.`review-likes` (`review-id`, `review-like-type`, `review-like-user`) \
+                SELECT " + con.escape(reviewId) + ", " + con.escape(likeAmmount) + ", " + con.escape(username) + " \
+                WHERE ( \
+                    SELECT COUNT(*) \
+                    FROM `review-likes` \
+                    WHERE `review-id` = " + con.escape(reviewId) +"  \
+                    AND `review-like-user` = " + con.escape(username) + " \
+                ) = 0;";
+    
+                con.query(sqlQuery, function (err, results) {
+                    if (err) {
+                        utils.sendNonHtmlOtherError(req, res, 500, "UNHANDELED_DB_ERR");
+                        console.log(sqlQuery);
+                        console.log(err);
+                        return;
+                    };
+    
+                    if (results.affectedRows == 1) {
+                        res.end("{'success': 'true'}");
+                    } else if (results.affectedRows == 0) {
+                        // (Probably) means user has already liked
+                        utils.sendNonHtmlOtherError(req, res, 409, "REVIEW_LIKE_CONFLICT");
+                    }
+                });
             });
         });
     } else {

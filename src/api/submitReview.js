@@ -38,8 +38,6 @@ exports.main = (req, res) => {
                 WHERE (SELECT COUNT(*) `count` FROM `reviews` WHERE `object-hash-id` = " // Only insert if user hans't already written a review
                 + con.escape(reviewObjectId) + " AND `review-user` = " + con.escape(reviewUser) + ") = 0;";
 
-                console.log(sqlQuery);
-
                 con.query(sqlQuery, function (err, results) {
                     if (err) {
                         utils.sendNonHtmlOtherError(req, res, 500, "UNHANDELED_DB_ERR");

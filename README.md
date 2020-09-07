@@ -10,11 +10,11 @@ Here's a quick list of current features:
 * Download files
 * View reviews
 * Search for files
+* Can "like" reviews
+* Can create reviews
 
 It cannot, but would like it to be able in future to:
-* Have a user system
 * Allow you to upload files
-* Allow to "like" reviews
 * Store your favourite tags
 * Be able to follow tags and accounts
 

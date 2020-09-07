@@ -52,3 +52,7 @@ exports.ifObjectExists = (objectId, falseFunc, trueFunc) => {
         });
     });
 }
+
+exports.isBlank = (object) => {
+    return (typeof object == "undefined" || object == "" || object == null);
+}

@@ -41,7 +41,7 @@ function searchEnterDetect(event) {
 function likeBtnClick(event) {
     try {
         if (event.srcElement.classList.contains("not-logged-in")) { // Not logged in
-            document.getElementsByClassName("toast-body")[0].innerHTML = "You must <a href='/signin'>sign in</a> to like/dislike reviews.";
+            document.getElementsByClassName("toast-body")[0].innerHTML = "You must <a href='/signin?referer=" + window.location.pathname + "'>sign in</a> to like/dislike reviews.";
             $('.toast').toast('show');
         } else if (!event.srcElement.classList.contains("active")) { // Hasn't already liked (need to like review)
             likeOrDislikeReview(event);

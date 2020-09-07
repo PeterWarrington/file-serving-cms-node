@@ -11,7 +11,7 @@ function onSignIn(googleUser) {
             document.cookie = "username=" + userDetails["user"]["user-name"] + "; expires=2099-12-30 00:00:00";
             document.cookie = "authtoken=" + userDetails["user"]["auth-token"] + "; expires=2099-12-30 00:00:00";
 
-            if (typeof referer == "undefined") {
+            if (referer == "") {
                 referer = "/";
             }
 

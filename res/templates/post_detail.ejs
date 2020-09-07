@@ -7,7 +7,7 @@
         </button> 
     </div> 
     <div class="toast-body"> 
-        You must <a href="/signin">sign in</a> to like/dislike reviews. 
+        You must <a href="/signin?referer=/post/<%= postData.objectId %>">sign in</a> to like/dislike reviews. 
     </div> 
 </div>
 
@@ -77,7 +77,7 @@
                             </div>
                         </div>
                     <% } else { %>
-                        You must <a href="/signin">sign-in</a> to create reviews.
+                        You must <a href="/signin?referer=/post/<%= postData.objectId %>">sign-in</a> to create reviews.
                     <% } %>
                 </div>
                 <br/>

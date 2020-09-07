@@ -41,13 +41,13 @@
 
         <% signInTypesAvailable = 0;%>
 
-        <% if (google.useGoogleSignIn) {signInTypesAvailable++; %>
+        <% if (user.signedIn) { %>
+            <p>You are already logged in. You may want to <a href="/">go back to the homepage</a>.</p>
+        <% } else if (google.useGoogleSignIn) {signInTypesAvailable++; %>
             <div class="g-signin2" data-onsuccess="onSignIn"></div>
-        <% } %>
-
-        <% if (signInTypesAvailable == 0) { %>
-            <span>You cannot sign in or create an account at this time.</span>
-        <% } %>
+        <% } else if (signInTypesAvailable == 0) { %>
+            <p>You cannot sign in or create an account at this time.</p>
+        <% } %> 
     </div>
 </div>
 

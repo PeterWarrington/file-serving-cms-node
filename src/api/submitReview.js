@@ -9,7 +9,7 @@ exports.main = (req, res) => {
         reviewObjectId = req.body.reviewObjectId;
         reviewUser = req.variables.user.name;
 
-        utils.ifObjectExists(reviewObjectId, () => {
+        utils.ifPostExists(reviewObjectId, () => {
             // Object does not exist
             utils.sendNonHtmlOtherError(req, res, 400, "OBJECT_DOES_NOT_EXIST");
             return;

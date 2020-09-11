@@ -38,9 +38,24 @@ exports.sendNonHtmlOtherError = (req, res, httpCode, errorCode) => {
 };
 
 // check if an object exists
-exports.ifObjectExists = (objectId, falseFunc, trueFunc) => {
+exports.ifPostExists = (objectId, falseFunc, trueFunc) => {
     mysqlQueryer.generateDbConnection("read", "public", (con) => {
         sqlQuery = "SELECT `object-hash-id` FROM `objects` WHERE `object-hash-id`=" + con.escape(objectId);
+
+        con.query(sqlQuery, function (err, results) {
+            if (err) throw err;
+
+            if (results.length >= 1)
+                trueFunc()
+            else
+                falseFunc();
+        });
+    });
+}
+
+exports.ifReviewExists = (reviewId, falseFunc, trueFunc) => {
+    mysqlQueryer.generateDbConnection("read", "public", (con) => {
+        sqlQuery = "SELECT `review-id` FROM `reviews` WHERE `review-id`=" + con.escape(reviewId);
 
         con.query(sqlQuery, function (err, results) {
             if (err) throw err;

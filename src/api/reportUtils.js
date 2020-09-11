@@ -20,20 +20,48 @@ exports.writeReport = (reportUser, reportType, reportSeverity, reportText, repor
 }
 
 exports.reportPostRequest = (req, res) => {
-    let reportUser = (req.variables.user.signedIn) ? req.variables.user.name : "ANONYMOUS";
-    let reportType = (!utils.isBlank(req.body.reportType)) ? req.body.reportType : "UNKNOWN";
-    let reportSeverity = (!utils.isBlank(req.body.reportSeverity)) ? req.body.reportSeverity : "0";
-    let reportText = (!utils.isBlank(req.body.reportText)) ? req.body.reportText : "";
-    let reportObject = {
-        "type": req.body.reportObjectType,
-        "id": req.body.reportObjectId
+    let reportUser = req.variables.user.signedIn ? req.variables.user.name : "ANONYMOUS";
+    let reportType = !utils.isBlank(req.body.reportType) ? req.body.reportType : "UNKNOWN"; // "UNKNOWN" if not "review or "post"
+    let reportSeverity = !utils.isBlank(req.body.reportSeverity) ? req.body.reportSeverity : "0";
+    let reportText = !utils.isBlank(req.body.reportText) ? req.body.reportText : "";
+
+    if (req.body.reportObjectType != "review" && req.body.reportObjectType != "post") {
+        utils.sendNonHTMLOtherError(req, res, 400, "REPORT_INCORRECT_OBJECT_TYPE");
+        return;
+    }
+
+    // Check object exists
+
+    if (utils.isBlank(req.body.reportObjectId)) {
+        utils.sendNonHTMLOtherError(req, res, 400, "REPORT_NO_SUCH_OBJECT_ID");
+        return;
+    }
+
+    let ifObjectExistsCallback = () => {
+        let reportObject = {
+            "type": req.body.reportObjectType,
+            "id": req.body.reportObjectId
+        };
+
+        exports.writeReport(reportUser, reportType, reportSeverity, reportText, reportObject, (err) => {
+            if (err != null) {
+                utils.sendNonHTMLOtherError(req, res, 500, "FILE_REPORT_WRITE_ERR");
+            } else {
+                res.end("{'success': 'true'}");
+            }
+        });
     };
 
-    exports.writeReport(reportUser, reportType, reportSeverity, reportText, reportObject, (err) => {
-        if (err != null) {
-            utils.sendNonHTMLOtherError(req, res, 500, "FILE_REPORT_WRITE_ERR");
-        } else {
-            res.end("{'success': 'true'}");
-        }
-    });
+    let ifObjectNotExistCallback = () => {
+        utils.sendNonHTMLOtherError(req, res, 400, "REPORT_NO_SUCH_OBJECT_ID");
+    }
+
+    switch (reportType) {
+        case "post":
+            utils.ifPostExists(req.body.reportObjectId, ifObjectNotExistCallback, ifObjectExistsCallback);
+        case "review":
+            utils.ifReviewExists(req.body.reportObjectId, ifObjectNotExistCallback, ifObjectExistsCallback);
+        default:
+            ifObjectExistsCallback();
+    }
 }

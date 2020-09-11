@@ -39,10 +39,26 @@
         <div class="row mx-0 review" id="review-<%= reviewIDs[x] %>" access-date="<%= reviewAccessTime %>">
             <div class="col-sm card mt-1 mr-1">
                 <div class="card-body">
-                    <h5 class="card-title">
-                        <%- include(process.cwd() + '/res/templates/ratingGenerator') %>
-                        By: <%= reviewData[x].reviewUser %> 
-                    </h5>
+                    <div class="top-row">
+                        <h5 class="card-title">
+                            <%- include(process.cwd() + '/res/templates/ratingGenerator') %>
+                            By: <%= reviewData[x].reviewUser %> 
+                        </h5>
+
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item review-report-btn" href="#">Report</a>
+                                <% if (reviewData[x].reviewUser == user.name) { %>
+                                    <a class="dropdown-item review-edit-btn" href="#">Edit</a>
+                                    <a class="dropdown-item text-danger review-delete-btn" href="#">Delete</a>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+
                     <h6 class="card-subtitle mb-2 text-muted">
                         Submitted: <%= reviewData[x].reviewDate %>
                     </h6>

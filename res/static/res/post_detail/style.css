@@ -4,3 +4,7 @@
     color: initial !important;
     text-decoration: none !important;
 }
+.top-row {
+    display: flex;
+    justify-content: space-between;
+}

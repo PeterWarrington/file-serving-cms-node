@@ -55,13 +55,13 @@ exports.ifPostExists = (objectId, falseFunc, trueFunc) => {
 
 exports.ifReviewExists = (reviewId, falseFunc, trueFunc) => {
     mysqlQueryer.generateDbConnection("read", "public", (con) => {
-        sqlQuery = "SELECT `review-id` FROM `reviews` WHERE `review-id`=" + con.escape(reviewId);
+        sqlQuery = "SELECT `review-id`,`review-user` FROM `reviews` WHERE `review-id`=" + con.escape(reviewId);
 
         con.query(sqlQuery, function (err, results) {
             if (err) throw err;
 
             if (results.length >= 1)
-                trueFunc()
+                trueFunc(results)
             else
                 falseFunc();
         });

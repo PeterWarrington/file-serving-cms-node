@@ -72,7 +72,7 @@ exports.reportPostRequest = (req, res) => {
             utils.ifPostExists(req.body.reportObjectId, () => {ifObjectNotExistCallback()}, () => {ifObjectExistsCallback()});
             break;
         case "review":
-            utils.ifReviewExists(req.body.reportObjectId, () => {ifObjectNotExistCallback()}, () => {ifObjectExistsCallback()});
+            utils.ifReviewExists(req.body.reportObjectId, () => {ifObjectNotExistCallback()}, (result) => {ifObjectExistsCallback()});
             break;
         default:
             ifObjectNotExistCallback();

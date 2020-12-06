@@ -81,6 +81,10 @@ app.post('/api/report_review_or_object', (req, res) => {
     require(process.cwd() + '/src/api/reportUtils.js').reportPostRequest(req, res);
 })
 
+app.post('/api/delete_review', (req, res) => {
+    require(process.cwd() + '/src/api/deleteReview.js').main(req, res);
+})
+
 app.listen(port, () => console.log(`Project #Q server has started at http://localhost:${port}`));
 
 process.on('uncaughtException', function(err) { // TODO: Add much better error handling :-q, the user will NOT receive a clean error (ie, will load for ETERNITY), and weird stuff may happen

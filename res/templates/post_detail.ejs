@@ -19,7 +19,11 @@
             <%= postData.title %>
                 <h5 class="text-muted">
                     <a href="#" class="text-muted">By <%= postData.userName%></a> | 
-                    <%- include(process.cwd() + '/res/templates/ratingGenerator.ejs') %>
+
+                    <% ratingType = "postDetail" %>
+                    <%- include(process.cwd() + '/res/templates/ratingGenerator.ejs'); %>
+                    <% ratingType = undefined %>
+
                     | Posted <%= postData.rawDate %>
                 </h5>
             </h3>

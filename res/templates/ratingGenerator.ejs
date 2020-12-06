@@ -1,21 +1,23 @@
 <%
     roundedRating = null;
-    if (typeof x != 'undefined') { // We've been giving a review, give the rating for that
-        roundedRating = reviewData[x].reviewRating;
-    } else if (postData.roundedRating != null && typeof postData.roundedRating != 'undefined') { // We've been given a post, give the rating for that
+    if (typeof ratingType != "undefined" && ratingType == "postDetail") {
         roundedRating = postData.roundedRating;
+    } else if (typeof ratingType != "undefined" && ratingType == "review") {
+        roundedRating = reviewData[x].reviewRating;
+    } else if (typeof ratingType != "undefined" && ratingType == "postPreview"){
+        roundedRating = generatorData.postArray[i].roundedRating;
     } 
 %> 
 <span class="star-count <% if (roundedRating == null) { %> no-star-count <% } %>">
-    <% var i = 1; while (i <= Math.floor(roundedRating)) { %>
+    <% var j = 1; while (j <= Math.floor(roundedRating)) { %>
         <i class="fas fa-star"></i>
-    <% i++; } i -= 1;%>
+    <% j++; } j -= 1;%>
 
-    <% if (roundedRating - i == 0.5) { %>
+    <% if (roundedRating - j == 0.5) { %>
         <i class="fas fa-star-half-alt"></i>
-    <% i++; } %>
+    <% j++; } %>
 
-    <% while (i < 5) { %>
+    <% while (j < 5) { %>
         <i class="far fa-star"></i>
-    <% i++; } %>
+    <% j++; } %>
 </span>

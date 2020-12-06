@@ -41,7 +41,10 @@
                 <div class="card-body">
                     <div class="top-row">
                         <h5 class="card-title">
-                            <%- include(process.cwd() + '/res/templates/ratingGenerator') %>
+                            <% ratingType = "review" %>
+                            <%- include(process.cwd() + '/res/templates/ratingGenerator.ejs'); %>
+                            <% ratingType = undefined %>
+
                             By: <%= reviewData[x].reviewUser %> 
                         </h5>
 

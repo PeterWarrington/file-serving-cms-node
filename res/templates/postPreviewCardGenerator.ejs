@@ -6,8 +6,10 @@
             <div class="card-body">
                 <h5 class="card-title"> <i class="file-icon fas <%= generatorData.postArray[i].fileExtensionClass %> mr-2"></i><%= generatorData.postArray[i].title %></h5>
                 <h6 class="card-subtitle mb-2 text-muted">
-                    <% postData = generatorData.postArray[i];  %> 
-                    <%- include(process.cwd() + '/res/templates/ratingGenerator') %>
+                    <% ratingType = "postPreview" %>
+                    <%- include(process.cwd() + '/res/templates/ratingGenerator.ejs'); %>
+                    <% ratingType = undefined %>
+
                     | <%= generatorData.postArray[i].userName %> | <%= generatorData.postArray[i].simpleDate %>
                 </h6>
                 <p class="card-text"><%= generatorData.postArray[i].descriptionShort %></p>

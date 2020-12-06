@@ -21,11 +21,17 @@ exports.main = async (req, res) => {
             });
             return response.hits.hits;
         } catch (error) {
-            console.trace(error.message)
+            return error.toString();
         }
     })(queryStr).then(async (elasticResults) => {
+        if (typeof elasticResults == "string") {
+            utils.sendOtherError(req, res, 500, {
+                short: "Search service unavailable",
+                long: "The search service is unavailable at the moment. Try again later to see if the issue is resolved.<br><code>Advanced info: " + elasticResults + "</code>"
+            });
+        }
+        
         // Now for each result from the search we need to get the full details for each object
-
         con = mysqlQueryer.generateDbConnection("read", "public", null);
         const query = nodeUtil.promisify(con.query).bind(con);
 

@@ -11,6 +11,6 @@ exports.config = {
         clientId: "447324342102-17birjgedo93hj3b81nhi883mtft4v5q.apps.googleusercontent.com"
     },
     flags: {
-        ENABLE_EXPERIMENTAL_REPORT_FEATURE: true // Enables feature allowing reporting of reviews, writes these reports to ./reportLog.JSON
+        ENABLE_EXPERIMENTAL_REPORT_FEATURE: false // Enables feature allowing reporting of reviews, writes these reports to ./reportLog.JSON
     }
 }

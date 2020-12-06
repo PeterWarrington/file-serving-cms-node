@@ -25,6 +25,36 @@ window.onload = (ev) => {
 
     if (document.getElementById("sign-in-btn") !== null)
         document.getElementById("sign-in-btn").onclick = signIn;
+    
+    reviewReportBtns = document.getElementsByClassName("review-report-btn");
+    for (i=0; i < reviewReportBtns.length; i++) {
+        reviewReportBtns[i].onclick = (event) => {
+            reviewId = getReviewId(event);
+            $('#report-modal').modal('show');
+            document.getElementById("report-submit").onclick = (event) => {reportSubmit(event, reviewId)};
+        }
+    };
+}
+
+function reportSubmit(event, reviewId) {
+    var url = "/api/report_review_or_object";
+    var reportText = document.getElementById("report-detail-textarea").value;
+    var reqParams = "reportSeverity=0&reportObjectType=review&reportObjectId="+ reviewId + "&reportText=" + reportText;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+        if(xhr.status === 200) {
+            $('#report-modal').modal('hide');
+            document.getElementsByClassName("toast-body")[0].innerHTML = "Report succesfully submitted.";
+            $('.toast').toast('show');
+        } else {
+            document.getElementsByClassName("toast-body")[0].innerHTML = "There was a problem submitting your report.";
+            $('.toast').toast('show');
+        }
+    };
+    xhr.send(reqParams);
 }
 
 function searchAction(event) {

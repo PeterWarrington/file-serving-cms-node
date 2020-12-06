@@ -44,7 +44,7 @@ body {
     position: fixed;
     top: 5px;
     right: 5px;
-    z-index: 500;
+    z-index: 2000;
 }
 .input-star-btn {
     border-color: #c2b937 !important;
@@ -53,4 +53,7 @@ body {
 .input-star-btn:hover, .input-star-btn:focus, .input-star-btn:active, .input-star-btn.active {
     background-color: #c2b937 !important;
     color: #fff !important;
+}
+.dropdown-item {
+    cursor: pointer;
 }

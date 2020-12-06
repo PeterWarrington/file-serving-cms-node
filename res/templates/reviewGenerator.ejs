@@ -45,18 +45,22 @@
                             By: <%= reviewData[x].reviewUser %> 
                         </h5>
 
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item review-report-btn" href="#">Report</a>
-                                <% if (reviewData[x].reviewUser == user.name) { %>
-                                    <a class="dropdown-item review-edit-btn" href="#">Edit</a>
-                                    <a class="dropdown-item text-danger review-delete-btn" href="#">Delete</a>
-                                <% } %>
+                        <% if (reviewData[x].reviewUser == user.name || flags.ENABLE_EXPERIMENTAL_REPORT_FEATURE) { // Only display dropdown if there are actually options to display %>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <% if (flags.ENABLE_EXPERIMENTAL_REPORT_FEATURE) { %>
+                                        <span class="dropdown-item review-report-btn">Report</span>
+                                    <% } %>
+                                    <% if (reviewData[x].reviewUser == user.name) { %>
+                                        <a class="dropdown-item review-edit-btn" href="#">Edit</a>
+                                        <a class="dropdown-item text-danger review-delete-btn" href="#">Delete</a>
+                                    <% } %>
+                                </div>
                             </div>
-                        </div>
+                        <% } %>
                     </div>
 
                     <h6 class="card-subtitle mb-2 text-muted">

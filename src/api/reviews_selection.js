@@ -65,9 +65,18 @@ exports.getHTML = (options, resolutionFunc, rejectionFunc) => {
                     ...options
                 }, {}, 
                 function(err, html){
-                    result = {
-                        html: html,
-                        reviewIDs: reviewData.map(a => a.reviewId),
+                    result = {};
+                    if (err) {
+                        console.log(err);
+                        result = {
+                            html: ["<i>Unable to display reviews due to an error.</i>"],
+                            reviewIDs: [""]
+                        }
+                    } else {
+                        result = {
+                            html: html,
+                            reviewIDs: reviewData.map(a => a.reviewId),
+                        }
                     }
                     resolutionFunc(result);
             });

@@ -7,14 +7,8 @@ var cookieParser = require('cookie-parser');
 
 var variables = {
     user: {
-        tags: [
-            {
-                name: "GCSE"
-            },
-            {
-                name: "LOTF"
-            },
-    ]}, 
+        tags: []
+    },
     ...config
 };
 

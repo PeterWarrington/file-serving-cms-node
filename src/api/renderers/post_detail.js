@@ -49,7 +49,7 @@ exports.main = (req, res) => {
                                 fileExtensionClass: getClassNameForExtension(result["object-file-extension"]),
                                 objectId: objectId,
                                 downloadCount: result["object-download-count"],
-                                rating: Number(rating.toFixed(2)), // trims rating to two decimal places then removes trailing zeros
+                                rating: () => {try { return Number(rating.toFixed(2))} catch {return 0;}}, // trims rating to two decimal places then removes trailing zeros
                                 roundedRating: getRatings.round_to_precision(rating, 0.5)
                             };
 

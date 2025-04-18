@@ -1,4 +1,4 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const config = require(process.cwd() + "/config.js").config;
 
 exports.generateDbConnection = (readOrWrite, type, callback) => {
